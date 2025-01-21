@@ -2,7 +2,7 @@ import React from 'react';
 import { Play } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
-export default function ContentCard({ id, title, author, ownerFullName, views, time, thumbnail }) {
+export default function ContentCard({ id, title, username, time, thumbnail }) {
   const navigate = useNavigate();
 
   const handleClick = () => {
@@ -27,10 +27,10 @@ export default function ContentCard({ id, title, author, ownerFullName, views, t
         {title}
       </h3>
       <p className="text-sm text-surface-600 dark:text-surface-400">
-        {ownerFullName || author || 'Unknown'}
+        @{username || 'unknown'}
       </p>
       <p className="text-sm text-surface-500 dark:text-surface-500">
-        {views} views · {time}
+        {time}
       </p>
     </div>
   );

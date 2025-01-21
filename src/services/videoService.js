@@ -199,6 +199,27 @@ const togglePublishStatus = async (videoId) => {
 	}
 };
 
+// Get video likes count
+const getVideoLikesCount = async (videoId) => {
+	try {
+		const accessToken = getCookie("accessToken");
+		if (!accessToken) {
+			console.log("No access token found");
+			return null;
+		}
+
+		const response = await axios.get(`${conf.BACKEND_URL}/likes/videos/${videoId}`, {
+			headers: { Authorization: `Bearer ${accessToken}` },
+			withCredentials: true,
+		});
+
+		return response.data;
+	} catch (error) {
+		console.log("Error while fetching video likes: ", error);
+		return null;
+	}
+};
+
 export {
 	getAllVideos,
 	uploadVideo,
@@ -206,4 +227,5 @@ export {
 	updateVideo,
 	deleteVideo,
 	togglePublishStatus,
+	getVideoLikesCount
 };

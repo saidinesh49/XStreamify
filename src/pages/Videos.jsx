@@ -55,12 +55,11 @@ export default function Videos() {
               key={video._id}
               id={video._id}
               title={video.title}
-              ownerFullName={video.owner?.fullName}
-              views={video.views || 0}
+              username={video.username}
               time={new Date(video.createdAt).toLocaleDateString()}
               thumbnail={video.thumbnail}
-              videoUrl={video.videoFile}
             />
+
           ))}
         </div>
       ))}
