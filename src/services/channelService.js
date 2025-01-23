@@ -1,39 +1,41 @@
 import axios from "axios";
 import conf from "../conf/conf";
 import { getCookie } from "./authService";
+import { asyncHandler } from "./utils/asyncHandler";
+import { ApiError } from "./utils/ApiError";
 
-const getUserByObjectId = async(objectid)=>{
+const getUserByObjectId = async (objectid) => {
 	try {
-		if(!objectid){
+		if (!objectid) {
 			console.log("Object Id is needed");
 			return;
 		}
-        const accessToken=getCookie("accessToken");
-		if(!accessToken) {
+		const accessToken = getCookie("accessToken");
+		if (!accessToken) {
 			console.log("No access token found");
 			return null;
-		   }
-		
-		const data=await axios.get(`${conf.BACKEND_URL}/users/${objectid}`,{
-			headers: { Authorization: `Bearer ${accessToken}` },
-			withCredentials: true,
-		})
-		.then((res)=>{
-			console.log(res);
-			return res.data;
-		});
+		}
 
-		if(!data){
+		const data = await axios
+			.get(`${conf.BACKEND_URL}/users/${objectid}`, {
+				headers: { Authorization: `Bearer ${accessToken}` },
+				withCredentials: true,
+			})
+			.then((res) => {
+				console.log(res);
+				return res.data;
+			});
+
+		if (!data) {
 			console.log("No details found or invalid Object Id");
 		}
 
 		return data;
-
 	} catch (error) {
-		console.log("Error: ",error);
+		console.log("Error: ", error);
 		return null;
 	}
-}
+};
 
 const getChannelInfo = async (username) => {
 	try {
@@ -108,14 +110,19 @@ const toggleChannelSubscription = async (channelId) => {
 
 const getUserFollowings = async (userChannelId) => {
 	try {
-		if(!userChannelId) {
-			throw new Error("User channel is not forwarded to channel service at frontend");
+		if (!userChannelId) {
+			throw new Error(
+				"User channel is not forwarded to channel service at frontend",
+			);
 		}
 		const accessToken = getCookie("accessToken");
-		const Data = await axios.get(`${conf.BACKEND_URL}/subscriptions/c/${userChannelId}`, {
-			headers: { Authorization: `Bearer ${accessToken}` },
-			withCredentials: true,
-		});
+		const Data = await axios.get(
+			`${conf.BACKEND_URL}/subscriptions/c/${userChannelId}`,
+			{
+				headers: { Authorization: `Bearer ${accessToken}` },
+				withCredentials: true,
+			},
+		);
 		if (!Data?.data) {
 			console.log("Problem occured while getting followers");
 			return null;
@@ -127,6 +134,35 @@ const getUserFollowings = async (userChannelId) => {
 	}
 };
 
-export { getUserFollowings, 
-    getChannelInfo, getCurrentUserInfo, toggleChannelSubscription,
- getUserByObjectId };
+const isUserSubcribedToChannel = asyncHandler(async (channelId) => {
+	if (!channelId) {
+		throw new ApiError(400, "channelId is required");
+	}
+	const accessToken = getCookie("accessToken");
+	const response = await axios.get(
+		`${conf.BACKEND_URL}/subscriptions/c/${channelId}/check`,
+		{
+			headers: { Authorization: `Bearer ${accessToken}` },
+			withCredentials: true,
+		},
+	);
+	if (!response?.data) {
+		throw new ApiError(
+			500,
+			"Something went wrong while getting subscription check",
+		);
+	}
+	if (response?.data) {
+		return true;
+	}
+	return false;
+});
+
+export {
+	getUserFollowings,
+	getChannelInfo,
+	getCurrentUserInfo,
+	toggleChannelSubscription,
+	getUserByObjectId,
+	isUserSubcribedToChannel,
+};

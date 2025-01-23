@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { getVideoById, getVideoLikesCount } from "../services/videoService";
 import {
 	getUserByObjectId,
+	isUserSubcribedToChannel,
 	toggleChannelSubscription,
 } from "../services/channelService";
 import { useUserContext } from "../context/UserContext";
@@ -30,6 +31,8 @@ import {
 } from "../services/commentService";
 import { toast } from "react-toastify";
 import { LoginToAccess } from "../utils/LoginToAccess";
+import "@fortawesome/fontawesome-free/css/all.min.css";
+import CommentCard from "../components/CommentCard";
 
 export default function VideoPlayer() {
 	const { videoId } = useParams();
@@ -88,13 +91,17 @@ export default function VideoPlayer() {
 			const response = await updateComment(commentId, content);
 			if (response?.data) {
 				setComments(
-					comments.map((c) => (c._id === commentId ? { ...c, content } : c)),
+					comments.map((c) =>
+						c._id === commentId ? { ...c, content: response.data?.content } : c,
+					),
 				);
 				setEditingComment(null);
 				toast.success("Comment updated successfully");
+				return true;
 			}
 		} catch (error) {
 			toast.error("Failed to update comment");
+			return false;
 		}
 	};
 	const videoRef = useRef(null);
@@ -127,12 +134,12 @@ export default function VideoPlayer() {
 					}
 
 					// Fetch owner details
-					const ownerResponse = await getUserByObjectId(
-						videoResponse.data.owner,
-					);
-					if (ownerResponse?.data) {
+					if (videoResponse?.data?.owner) {
+						const ownerResponse = await getUserByObjectId(
+							videoResponse.data.owner,
+						);
 						setOwner(ownerResponse.data);
-						setIsSubscribed(ownerResponse.data.isSubscribed);
+						setIsSubscribed(isUserSubcribedToChannel(videoResponse.data.owner));
 					}
 				} else {
 					setError("Video not found");
@@ -154,7 +161,7 @@ export default function VideoPlayer() {
 			return;
 		}
 		try {
-			await toggleChannelSubscription(owner._id);
+			await toggleChannelSubscription(owner?._id);
 			setIsSubscribed(!isSubscribed);
 			toast.success(
 				isSubscribed ? "Unsubscribed successfully" : "Subscribed successfully",
@@ -222,10 +229,10 @@ export default function VideoPlayer() {
 		setShowShareModal(false);
 	};
 
-	const handleOwnerClick = (e) => {
-		e.stopPropagation(); // Prevent video play/pause
-		if (owner?.username) {
-			navigate(`/c/${owner.username}`);
+	const handleProfileClick = (props) => {
+		props.e.stopPropagation(); // Prevent video play/pause
+		if (props?.username) {
+			navigate(`/c/${props.username}`);
 		}
 	};
 
@@ -306,7 +313,9 @@ export default function VideoPlayer() {
 					<div className="flex items-center gap-4 w-full sm:w-auto">
 						<div
 							className="flex items-center gap-4 cursor-pointer"
-							onClick={handleOwnerClick}
+							onClick={(e) => {
+								handleProfileClick({ e, username: owner?.username });
+							}}
 						>
 							<img
 								src={
@@ -424,7 +433,7 @@ export default function VideoPlayer() {
 					</div>
 				)}
 
-				<div className="mt-6 p-4 bg-surface-50 dark:bg-surface-800 rounded-lg">
+				<div className="mt-6 p-4 bg-surface-200 dark:bg-surface-800 rounded-lg">
 					<p className="text-surface-700 dark:text-surface-300 whitespace-pre-line">
 						{video?.description}
 					</p>
@@ -457,79 +466,15 @@ export default function VideoPlayer() {
 					{/* Comments List */}
 					<div className="space-y-4">
 						{comments.map((comment) => (
-							<div
+							<CommentCard
 								key={comment._id}
-								className="flex gap-4 p-4 bg-surface-50 dark:bg-surface-800 rounded-lg"
-							>
-								<img
-									src={
-										comment.owner?.avatar ||
-										`https://ui-avatars.com/api/?name=${comment.owner?.fullName}`
-									}
-									alt=""
-									className="w-10 h-10 rounded-full"
-								/>
-								<div className="flex-1">
-									<div className="flex items-center justify-between">
-										<div>
-											<p className="font-medium">@{comment.owner?.username}</p>
-											<p className="text-sm text-surface-500">
-												{new Date(comment.createdAt).toLocaleDateString()}
-											</p>
-										</div>
-										{userData?._id === comment.owner?._id && (
-											<div className="flex gap-2">
-												<button
-													onClick={() => setEditingComment(comment)}
-													className="text-surface-600 hover:text-surface-900 dark:text-surface-400 dark:hover:text-surface-200"
-												>
-													Edit
-												</button>
-												<button
-													onClick={() => handleCommentDelete(comment._id)}
-													className="text-red-600 hover:text-red-700"
-												>
-													Delete
-												</button>
-											</div>
-										)}
-									</div>
-									{editingComment?._id === comment._id ? (
-										<div className="mt-2 flex gap-2">
-											<input
-												type="text"
-												value={editingComment.content}
-												onChange={(e) =>
-													setEditingComment({
-														...editingComment,
-														content: e.target.value,
-													})
-												}
-												className="flex-1 px-3 py-1 rounded border"
-											/>
-											<button
-												onClick={() =>
-													handleCommentUpdate(
-														comment._id,
-														editingComment.content,
-													)
-												}
-												className="px-3 py-1 bg-primary-600 text-white rounded"
-											>
-												Save
-											</button>
-											<button
-												onClick={() => setEditingComment(null)}
-												className="px-3 py-1 bg-surface-200 rounded"
-											>
-												Cancel
-											</button>
-										</div>
-									) : (
-										<p className="mt-2">{comment.content}</p>
-									)}
-								</div>
-							</div>
+								comment={comment}
+								owner={owner}
+								userData={userData}
+								handleProfileClick={handleProfileClick}
+								handleCommentDelete={handleCommentDelete}
+								handleCommentUpdate={handleCommentUpdate}
+							/>
 						))}
 					</div>
 				</div>
