@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { useUserContext } from "../context/UserContext";
 import { uploadVideo } from "../services/videoService";
 import Loading from "../components/Loading";
-import { toast } from 'react-toastify';
-import { Upload, FileVideo, Image } from 'lucide-react';
+import { toast } from "react-toastify";
+import { Upload, FileVideo, Image } from "lucide-react";
 
 export function VideoUploadForm() {
 	const [title, setTitle] = useState("");
@@ -20,8 +20,8 @@ export function VideoUploadForm() {
 	const handleVideoFileChange = (e) => {
 		const file = e.target.files[0];
 		if (file) {
-			console.log("Frontend attached file is: ",e.target.files[0]);
-			if (file.type.startsWith('video/')) {
+			console.log("Frontend attached file is: ", e.target.files[0]);
+			if (file.type.startsWith("video/")) {
 				setVideoFile(file);
 				setError(null);
 			} else {
@@ -34,7 +34,7 @@ export function VideoUploadForm() {
 	const handleThumbnailChange = (e) => {
 		const file = e.target.files[0];
 		if (file) {
-			if (file.type.startsWith('image/')) {
+			if (file.type.startsWith("image/")) {
 				setThumbnail(file);
 				setError(null);
 			} else {
@@ -61,40 +61,42 @@ export function VideoUploadForm() {
 		setLoading(true);
 		setError(null);
 		const toastId = toast.loading("Uploading video...");
-		
+
 		try {
 			const videoData = {
 				title: title.trim(),
 				description: description.trim(),
 				videoFile,
-				thumbnail
+				thumbnail,
 			};
+
+			console.log(videoData);
 
 			const response = await uploadVideo(videoData);
 			if (response?.data) {
-				toast.update(toastId, { 
-					render: "Video uploaded successfully!", 
-					type: "success", 
+				toast.update(toastId, {
+					render: "Video uploaded successfully!",
+					type: "success",
 					isLoading: false,
-					autoClose: 3000
+					autoClose: 3000,
 				});
 				navigate(`/videos/${response.data._id}`);
 			} else {
-				toast.update(toastId, { 
-					render: "Failed to upload video", 
-					type: "error", 
+				toast.update(toastId, {
+					render: "Failed to upload video",
+					type: "error",
 					isLoading: false,
-					autoClose: 3000
+					autoClose: 3000,
 				});
 				setError("Failed to upload video");
 			}
 		} catch (error) {
 			console.error("Error uploading video:", error);
-			toast.update(toastId, { 
-				render: "An error occurred while uploading", 
-				type: "error", 
+			toast.update(toastId, {
+				render: "An error occurred while uploading",
+				type: "error",
 				isLoading: false,
-				autoClose: 3000
+				autoClose: 3000,
 			});
 			setError("An error occurred while uploading the video");
 		} finally {

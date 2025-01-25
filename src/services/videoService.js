@@ -40,7 +40,7 @@ const getAllVideos = async ({
 const uploadVideo = async (videoData) => {
 	try {
 		const formData = new FormData();
-		
+
 		// Ensure all required fields are present
 		if (!videoData.title || !videoData.description || !videoData.videoFile) {
 			throw new Error("Missing required fields");
@@ -48,41 +48,37 @@ const uploadVideo = async (videoData) => {
 
 		// Get the full path and append it as a field
 		const videoPath = videoData.videoFile.path || videoData.videoFile;
-		formData.append('videoFile', videoData.videoFile);
-		formData.append('title', videoData.title);
-		formData.append('description', videoData.description);
-		
+		formData.append("videoFile", videoData.videoFile);
+		formData.append("title", videoData.title);
+		formData.append("description", videoData.description);
+
 		if (videoData.thumbnail) {
 			const thumbnailPath = videoData.thumbnail.path || videoData.thumbnail;
-			formData.append('thumbnail', thumbnailPath);
+			formData.append("videothumbnail", thumbnailPath);
 		}
 
 		// Log the paths for debugging
-		console.log('Video path:', videoPath);
-		if (videoData.thumbnail) {
-			console.log('Thumbnail path:', videoData.thumbnail.path);
+		console.log("Video path:", videoPath);
+		if (videoData?.thumbnail) {
+			console.log("Thumbnail path:", videoData.thumbnail);
 		}
 
-		const response = await axios.post(
-			`${conf.BACKEND_URL}/videos`, 
-			formData,
-			{
-				headers: { 
-					Authorization: `Bearer ${getCookie('accessToken')}`,
-					'Content-Type': 'multipart/form-data'
-				},
-				withCredentials: true
-			}
-		);
-		
+		const accessToken = getCookie("accessToken");
+
+		const response = await axios.post(`${conf.BACKEND_URL}/videos`, formData, {
+			headers: {
+				Authorization: `Bearer ${accessToken}`,
+				"Content-Type": "multipart/form-data",
+			},
+			withCredentials: true,
+		});
+
 		return response.data;
 	} catch (error) {
 		console.error("Error uploading video:", error);
 		throw error;
 	}
 };
-
-
 
 // Fetch a video by ID
 const getVideoById = async (videoId) => {
@@ -208,10 +204,13 @@ const getVideoLikesCount = async (videoId) => {
 			return null;
 		}
 
-		const response = await axios.get(`${conf.BACKEND_URL}/likes/videos/${videoId}`, {
-			headers: { Authorization: `Bearer ${accessToken}` },
-			withCredentials: true,
-		});
+		const response = await axios.get(
+			`${conf.BACKEND_URL}/likes/videos/${videoId}`,
+			{
+				headers: { Authorization: `Bearer ${accessToken}` },
+				withCredentials: true,
+			},
+		);
 
 		return response.data;
 	} catch (error) {
@@ -227,5 +226,5 @@ export {
 	updateVideo,
 	deleteVideo,
 	togglePublishStatus,
-	getVideoLikesCount
+	getVideoLikesCount,
 };
