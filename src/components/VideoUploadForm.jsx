@@ -17,33 +17,6 @@ export function VideoUploadForm() {
 	const { userData } = useUserContext();
 	const navigate = useNavigate();
 
-	const handleVideoFileChange = (e) => {
-		const file = e.target.files[0];
-		if (file) {
-			console.log("Frontend attached file is: ", e.target.files[0]);
-			if (file.type.startsWith("video/")) {
-				setVideoFile(file);
-				setError(null);
-			} else {
-				setError("Please select a valid video file");
-				setVideoFile(null);
-			}
-		}
-	};
-
-	const handleThumbnailChange = (e) => {
-		const file = e.target.files[0];
-		if (file) {
-			if (file.type.startsWith("image/")) {
-				setThumbnail(file);
-				setError(null);
-			} else {
-				setError("Please select a valid image file for thumbnail");
-				setThumbnail(null);
-			}
-		}
-	};
-
 	const handleVideoUpload = async (e) => {
 		e.preventDefault();
 		if (!userData?.username) {
@@ -63,14 +36,13 @@ export function VideoUploadForm() {
 		const toastId = toast.loading("Uploading video...");
 
 		try {
+			console.log("Frontend videoForm files are: ", videoFile, thumbnail);
 			const videoData = {
 				title: title.trim(),
 				description: description.trim(),
 				videoFile,
 				thumbnail,
 			};
-
-			console.log(videoData);
 
 			const response = await uploadVideo(videoData);
 			if (response?.data) {
@@ -157,7 +129,7 @@ export function VideoUploadForm() {
 							<input
 								type="file"
 								accept="video/*"
-								onChange={handleVideoFileChange}
+								onChange={(e) => setVideoFile(e.target.files[0])}
 								className="hidden"
 								id="video-upload"
 								required
@@ -182,7 +154,7 @@ export function VideoUploadForm() {
 							<input
 								type="file"
 								accept="image/*"
-								onChange={handleThumbnailChange}
+								onChange={(e) => setThumbnail(e.target.files[0])}
 								className="hidden"
 								id="thumbnail-upload"
 							/>

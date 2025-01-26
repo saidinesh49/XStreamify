@@ -51,6 +51,7 @@ const uploadVideo = async (videoData) => {
 		formData.append("videoFile", videoData.videoFile);
 		formData.append("title", videoData.title);
 		formData.append("description", videoData.description);
+		console.log("and form data is: ", formData);
 
 		if (videoData.thumbnail) {
 			const thumbnailPath = videoData.thumbnail.path || videoData.thumbnail;
@@ -65,7 +66,7 @@ const uploadVideo = async (videoData) => {
 
 		const accessToken = getCookie("accessToken");
 
-		const response = await axios.post(`${conf.BACKEND_URL}/videos`, formData, {
+		const response = await axios.post(`${conf.BACKEND_URL}/videos/`, formData, {
 			headers: {
 				Authorization: `Bearer ${accessToken}`,
 				"Content-Type": "multipart/form-data",
