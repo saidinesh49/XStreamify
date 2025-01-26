@@ -33,6 +33,13 @@ import { toast } from "react-toastify";
 import { LoginToAccess } from "../utils/LoginToAccess";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import CommentCard from "../components/CommentCard";
+import "@vidstack/react/player/styles/default/theme.css";
+import "@vidstack/react/player/styles/default/layouts/video.css";
+import { MediaPlayer, MediaProvider, Captions } from "@vidstack/react";
+import {
+	defaultLayoutIcons,
+	DefaultVideoLayout,
+} from "@vidstack/react/player/layouts/default";
 
 export default function VideoPlayer() {
 	const { videoId } = useParams();
@@ -236,7 +243,12 @@ export default function VideoPlayer() {
 		}
 	};
 
-	if (isLoading) return <Loading />;
+	if (isLoading)
+		return (
+			<div className="flex items-center justify-center h-screen">
+				<Loading />
+			</div>
+		);
 	if (!userData?.username)
 		return (
 			<div className="pt-20">
@@ -250,15 +262,14 @@ export default function VideoPlayer() {
 	return (
 		<div className="pt-20 px-4 max-w-7xl mx-auto">
 			<div className="relative aspect-video bg-black rounded-xl overflow-hidden">
-				<video
+				{/* <video
 					ref={videoRef}
 					src={video?.videoFile}
 					className="w-full h-full"
 					poster={video?.thumbnail}
 					onClick={togglePlay}
-				/>
-
-				{/* Video Controls */}
+				/> */}
+				{/* Video Controls
 				<div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
 					<div className="flex items-center gap-4">
 						<button
@@ -300,7 +311,15 @@ export default function VideoPlayer() {
 							<Maximize className="w-6 h-6" />
 						</button>
 					</div>
-				</div>
+				</div> */}
+
+				<MediaPlayer title={video?.title} src={video?.videoFile}>
+					<MediaProvider />
+					<DefaultVideoLayout
+						thumbnails={video?.thumbnail}
+						icons={defaultLayoutIcons}
+					/>
+				</MediaPlayer>
 			</div>
 
 			<div className="mt-4">
