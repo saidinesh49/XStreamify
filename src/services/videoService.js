@@ -47,21 +47,17 @@ const uploadVideo = async (videoData) => {
 		}
 
 		// Get the full path and append it as a field
+		console.log("videoData Video File:", videoData.videoFile);
+		console.log("VideoData Thumbnail File:", videoData.thumbnail);
+
 		const videoPath = videoData.videoFile.path || videoData.videoFile;
-		formData.append("videoFile", videoData.videoFile);
+		formData.append("videoFile", videoPath);
 		formData.append("title", videoData.title);
 		formData.append("description", videoData.description);
-		console.log("and form data is: ", formData);
 
 		if (videoData.thumbnail) {
 			const thumbnailPath = videoData.thumbnail.path || videoData.thumbnail;
 			formData.append("videothumbnail", thumbnailPath);
-		}
-
-		// Log the paths for debugging
-		console.log("Video path:", videoPath);
-		if (videoData?.thumbnail) {
-			console.log("Thumbnail path:", videoData.thumbnail);
 		}
 
 		const accessToken = getCookie("accessToken");
