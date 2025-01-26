@@ -13,7 +13,11 @@ import { useNavigate } from "react-router-dom";
 
 export default function Settings() {
 	const { userData, addUserData } = useUserContext();
-	const [isLoading, setIsLoading] = useState(false);
+	const [isDetailsLoading, setIsDetailsLoading] = useState(false);
+	const [isPasswordLoading, setIsPasswordLoading] = useState(false);
+	const [isAvatarLoading, setIsAvatarLoading] = useState(false);
+	const [isCoverImageLoading, setIsCoverImageLoading] = useState(false);
+
 	const navigate = useNavigate();
 	const [message, setMessage] = useState({ type: "", content: "" });
 
@@ -44,7 +48,7 @@ export default function Settings() {
 
 	const handleAccountUpdate = async (e) => {
 		e.preventDefault();
-		setIsLoading(true);
+		setIsDetailsLoading(true);
 		try {
 			const response = await updateAccountDetails(
 				accountData.fullName,
@@ -72,7 +76,7 @@ export default function Settings() {
 					error.response?.data?.message || "Failed to update account details",
 			});
 		}
-		setIsLoading(false);
+		setIsDetailsLoading(false);
 	};
 
 	const handlePasswordChange = async (e) => {
@@ -85,7 +89,7 @@ export default function Settings() {
 			return;
 		}
 
-		setIsLoading(true);
+		setIsPasswordLoading(true);
 		try {
 			await changePassword(passwordData.oldPassword, passwordData.newPassword);
 			toast.success("Password updated successfully!", {
@@ -111,7 +115,7 @@ export default function Settings() {
 				content: error.response?.data?.message || "Failed to change password",
 			});
 		}
-		setIsLoading(false);
+		setIsPasswordLoading(false);
 	};
 
 	const handleAvatarChange = async (e) => {
@@ -132,7 +136,7 @@ export default function Settings() {
 
 	const handleAvatarUpload = async () => {
 		if (!avatarFile) return;
-		setIsLoading(true);
+		setIsAvatarLoading(true);
 		try {
 			const response = await updateAvatar(avatarFile);
 			addUserData({ ...userData, avatar: response.data.avatar });
@@ -147,12 +151,12 @@ export default function Settings() {
 
 			setMessage({ type: "error", content: "Failed to update avatar" });
 		}
-		setIsLoading(false);
+		setIsAvatarLoading(false);
 	};
 
 	const handleCoverImageUpload = async () => {
 		if (!coverImageFile) return;
-		setIsLoading(true);
+		setIsCoverImageLoading(true);
 		try {
 			const response = await updateCoverImage(coverImageFile);
 			addUserData({ ...userData, coverImage: response.data.coverImage });
@@ -170,7 +174,7 @@ export default function Settings() {
 
 			setMessage({ type: "error", content: "Failed to update cover image" });
 		}
-		setIsLoading(false);
+		setIsCoverImageLoading(false);
 	};
 
 	return (
@@ -183,8 +187,8 @@ export default function Settings() {
 				<div
 					className={`p-4 rounded-lg ${
 						message.type === "success"
-							? "bg-green-100 text-green-700"
-							: "bg-red-100 text-red-700"
+							? "bg-green-100 text-green-700 dark:bg-transparent dark:text-green-400 border border-green-400 dark:border-green-600"
+							: "bg-red-100 text-red-700 dark:bg-transparent dark:text-red-400 border border-red-400 dark:border-red-600"
 					}`}
 				>
 					{message.content}
@@ -224,10 +228,10 @@ export default function Settings() {
 					</div>
 					<button
 						type="submit"
-						disabled={isLoading}
+						disabled={isDetailsLoading}
 						className="w-full py-2 px-4 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
 					>
-						{isLoading ? <Loading /> : "Update Account Details"}
+						{isDetailsLoading ? <Loading /> : "Update Account Details"}
 					</button>
 				</form>
 			</section>
@@ -292,10 +296,10 @@ export default function Settings() {
 					</div>
 					<button
 						type="submit"
-						disabled={isLoading}
+						disabled={isPasswordLoading}
 						className="w-full py-2 px-4 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
 					>
-						{isLoading ? <Loading /> : "Update Password"}
+						{isPasswordLoading ? <Loading /> : "Update Password"}
 					</button>
 				</form>
 			</section>
@@ -332,10 +336,10 @@ export default function Settings() {
 					{avatarFile && (
 						<button
 							onClick={handleAvatarUpload}
-							disabled={isLoading}
+							disabled={isAvatarLoading}
 							className="w-full py-2 px-4 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
 						>
-							{isLoading ? <Loading /> : "Upload Profile Picture"}
+							{isAvatarLoading ? <Loading /> : "Upload Profile Picture"}
 						</button>
 					)}
 				</div>
@@ -371,10 +375,10 @@ export default function Settings() {
 					{coverImageFile && (
 						<button
 							onClick={handleCoverImageUpload}
-							disabled={isLoading}
+							disabled={isCoverImageLoading}
 							className="w-full py-2 px-4 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
 						>
-							{isLoading ? <Loading /> : "Upload Cover Image"}
+							{isCoverImageLoading ? <Loading /> : "Upload Cover Image"}
 						</button>
 					)}
 				</div>

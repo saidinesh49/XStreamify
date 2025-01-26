@@ -7,6 +7,7 @@ import {
 	getChannelInfo,
 	toggleChannelSubscription,
 	getUserFollowings,
+	getUserChannelFollowers,
 } from "../services/channelService";
 
 const DEFAULT_COVER =
@@ -23,6 +24,8 @@ export function Channel() {
 	const [error, setError] = useState(null);
 	const [followings, setFollowings] = useState([]);
 	const [showFollowings, setShowFollowings] = useState(false);
+	const [followers, setFollowers] = useState([]);
+	const [showFollowers, setShowFollowers] = useState(false);
 
 	const channelProfileDetails = async () => {
 		setLoading(true);
@@ -71,6 +74,21 @@ export function Channel() {
 	const handleFollowingsClick = () => {
 		setShowFollowings(true);
 		fetchFollowings();
+	};
+
+	const fetchFollowers = async () => {
+		try {
+			const response = await getUserChannelFollowers();
+			console.log("followers:", response);
+			setFollowers(response?.data || []);
+		} catch (error) {
+			console.log("Error fetching followers:", error);
+		}
+	};
+
+	const handleFollowersClick = () => {
+		setShowFollowers(true);
+		fetchFollowers();
 	};
 
 	useEffect(() => {
@@ -128,14 +146,17 @@ export function Channel() {
 					<div className="mt-20 px-4 sm:px-8">
 						<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-0">
 							<div className="flex items-center gap-4">
-								<div className="text-base sm:text-lg">
+								<button
+									onClick={handleFollowersClick}
+									className="text-base sm:text-lg hover:text-primary-500 transition-colors"
+								>
 									<span className="font-semibold">
 										{channelData.subscribersCount}
 									</span>
 									<span className="ml-1 text-gray-600 dark:text-gray-400">
 										subscribers
 									</span>
-								</div>
+								</button>
 								<button
 									onClick={handleFollowingsClick}
 									className="text-base sm:text-lg hover:text-primary-500 transition-colors"
@@ -215,6 +236,59 @@ export function Channel() {
 														</h3>
 														<p className="text-sm text-gray-500 dark:text-gray-400">
 															@{following.username}
+														</p>
+													</div>
+												</div>
+											))
+										)}
+									</div>
+								</div>
+							</div>
+						)}
+						{/*Show Follwers Modal*/}
+						{showFollowers && (
+							<div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+								<div className="bg-white dark:bg-surface-800 rounded-lg w-full max-w-md mx-4">
+									<div className="p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+										<h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+											Followers
+										</h2>
+										<button
+											onClick={() => setShowFollowers(false)}
+											className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+										>
+											✕
+										</button>
+									</div>
+									<div className="p-4 max-h-[60vh] overflow-y-auto">
+										{followers.length === 0 ? (
+											<p className="text-center text-gray-500 dark:text-gray-400">
+												No Followers yet
+											</p>
+										) : (
+											followers.map((follower) => (
+												<div
+													key={follower._id}
+													className="flex items-center gap-3 p-2 hover:bg-gray-50 dark:hover:bg-surface-700 rounded-lg cursor-pointer"
+													onClick={() => {
+														navigate(`/c/${follower.username}`);
+														setShowFollower(false);
+													}}
+												>
+													<img
+														src={
+															follower.avatar ||
+															`https://ui-avatars.com/api/?name=${follower.fullName}`
+														}
+														alt={follower.fullName}
+														className="w-10 h-10 rounded-full"
+													/>
+													<div>
+														<h3 className="font-medium text-gray-900 dark:text-white">
+															{follower.fullName}
+														</h3>
+														<p className="text-sm text-gray-500 dark:text-gray-400">
+															@{follower.username}
 														</p>
 													</div>
 												</div>

@@ -4,15 +4,16 @@ import { getCookie } from "./authService";
 
 export const changePassword = async (oldPassword, newPassword) => {
 	try {
+		const accessToken = getCookie("accessToken");
 		const response = await axios.post(
 			`${conf.BACKEND_URL}/users/change-password`,
 			{ oldPassword, newPassword },
 			{
-				headers: { 
-					Authorization: `Bearer ${getCookie('accessToken')}`,
+				headers: {
+					Authorization: `Bearer ${accessToken}`,
 				},
-				withCredentials: true
-			}
+				withCredentials: true,
+			},
 		);
 		return response.data;
 	} catch (error) {
@@ -24,18 +25,18 @@ export const changePassword = async (oldPassword, newPassword) => {
 export const updateAvatar = async (avatarFile) => {
 	try {
 		const formData = new FormData();
-		formData.append('avatar', avatarFile);
+		formData.append("avatar", avatarFile);
 
 		const response = await axios.patch(
 			`${conf.BACKEND_URL}/users/update-avatar`,
 			formData,
 			{
-				headers: { 
-					Authorization: `Bearer ${getCookie('accessToken')}`,
-					'Content-Type': 'multipart/form-data'
+				headers: {
+					Authorization: `Bearer ${getCookie("accessToken")}`,
+					"Content-Type": "multipart/form-data",
 				},
-				withCredentials: true
-			}
+				withCredentials: true,
+			},
 		);
 		return response.data;
 	} catch (error) {
@@ -47,18 +48,18 @@ export const updateAvatar = async (avatarFile) => {
 export const updateCoverImage = async (coverImageFile) => {
 	try {
 		const formData = new FormData();
-		formData.append('coverImage', coverImageFile);
+		formData.append("coverImage", coverImageFile);
 
 		const response = await axios.patch(
 			`${conf.BACKEND_URL}/users/update-coverimage`,
 			formData,
 			{
-				headers: { 
-					Authorization: `Bearer ${getCookie('accessToken')}`,
-					'Content-Type': 'multipart/form-data'
+				headers: {
+					Authorization: `Bearer ${getCookie("accessToken")}`,
+					"Content-Type": "multipart/form-data",
 				},
-				withCredentials: true
-			}
+				withCredentials: true,
+			},
 		);
 		return response.data;
 	} catch (error) {
@@ -68,20 +69,21 @@ export const updateCoverImage = async (coverImageFile) => {
 };
 
 export const updateAccountDetails = async (fullName, email) => {
-    try {
-        const response = await axios.patch(
-            `${conf.BACKEND_URL}/users/update-account`,
-            { fullName, email },
-            {
-                headers: { 
-                    Authorization: `Bearer ${getCookie('accessToken')}`,
-                },
-                withCredentials: true
-            }
-        );
-        return response.data;
-    } catch (error) {
-        console.error("Error updating account details:", error);
-        throw error;
-    }
+	try {
+		const response = await axios.patch(
+			`${conf.BACKEND_URL}/users/update-account`,
+			{ fullName, email },
+			{
+				headers: {
+					Authorization: `Bearer ${getCookie("accessToken")}`,
+				},
+				withCredentials: true,
+			},
+		);
+		console.log("updated data", response?.data);
+		return response.data;
+	} catch (error) {
+		console.error("Error updating account details:", error);
+		throw error;
+	}
 };

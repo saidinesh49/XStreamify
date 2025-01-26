@@ -158,6 +158,25 @@ const isUserSubcribedToChannel = asyncHandler(async (channelId) => {
 	return false;
 });
 
+const getUserChannelFollowers = asyncHandler(async () => {
+	const accessToken = getCookie("accessToken");
+	const response = await axios.get(
+		`${conf.BACKEND_URL}/subscriptions/u/followers`,
+		{
+			headers: { Authorization: `Bearer ${accessToken}` },
+			withCredentials: true,
+		},
+	);
+
+	if (!response?.data) {
+		throw new ApiError(
+			500,
+			"Something went wrong while getting user channel followers",
+		);
+	}
+	return response.data;
+});
+
 export {
 	getUserFollowings,
 	getChannelInfo,
@@ -165,4 +184,5 @@ export {
 	toggleChannelSubscription,
 	getUserByObjectId,
 	isUserSubcribedToChannel,
+	getUserChannelFollowers,
 };

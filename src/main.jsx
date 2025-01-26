@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import App from "./App.jsx";
 import "./index.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
@@ -20,6 +20,7 @@ import SignUp from "./pages/Signup.jsx";
 import { VideoUploadForm } from "./components/VideoUploadForm.jsx";
 import Settings from "./pages/Settings.jsx";
 import VideoPlayer from "./pages/VideoPlayer.jsx";
+import Followings from "./pages/followings.jsx";
 
 const router = createBrowserRouter([
 	{
@@ -60,7 +61,7 @@ const router = createBrowserRouter([
 			},
 
 			{
-				path: "/favorites",
+				path: "/feed",
 				element: <ComingSoon />, // TODO
 			},
 
@@ -71,7 +72,7 @@ const router = createBrowserRouter([
 
 			{
 				path: "/following",
-				element: <ComingSoon />, // TODO
+				element: <Followings />, // TODO
 			},
 
 			{
@@ -115,14 +116,14 @@ ReactDOM.createRoot(document.getElementById("root")).render(
 				theme="dark"
 				toastClassName="text-sm font-medium"
 				style={{
-					'--toastify-color-light': '#18181B',
-					'--toastify-color-dark': '#18181B',
-					'--toastify-color-info': '#3B82F6',
-					'--toastify-color-success': '#22C55E',
-					'--toastify-color-warning': '#F59E0B',
-					'--toastify-color-error': '#EF4444',
-					'--toastify-text-color-light': '#F8FAFC',
-					'--toastify-text-color-dark': '#F8FAFC'
+					"--toastify-color-light": "#18181B",
+					"--toastify-color-dark": "#18181B",
+					"--toastify-color-info": "#3B82F6",
+					"--toastify-color-success": "#22C55E",
+					"--toastify-color-warning": "#F59E0B",
+					"--toastify-color-error": "#EF4444",
+					"--toastify-text-color-light": "#F8FAFC",
+					"--toastify-text-color-dark": "#F8FAFC",
 				}}
 			/>
 		</UserContextProvider>
