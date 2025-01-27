@@ -83,6 +83,7 @@ export function Channel() {
 			setFollowers(response?.data || []);
 		} catch (error) {
 			console.log("Error fetching followers:", error);
+			setFollowers([]);
 		}
 	};
 

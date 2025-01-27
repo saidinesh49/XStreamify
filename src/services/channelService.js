@@ -129,7 +129,7 @@ const getUserFollowings = async (userChannelId) => {
 		}
 		return Data?.data;
 	} catch (error) {
-		console.log("Error: while getting user followers ", error);
+		console.log("Error: while getting user followings ", error);
 		return null;
 	}
 };
@@ -158,24 +158,29 @@ const isUserSubcribedToChannel = asyncHandler(async (channelId) => {
 	return false;
 });
 
-const getUserChannelFollowers = asyncHandler(async () => {
-	const accessToken = getCookie("accessToken");
-	const response = await axios.get(
-		`${conf.BACKEND_URL}/subscriptions/u/followers`,
-		{
-			headers: { Authorization: `Bearer ${accessToken}` },
-			withCredentials: true,
-		},
-	);
-
-	if (!response?.data) {
-		throw new ApiError(
-			500,
-			"Something went wrong while getting user channel followers",
+const getUserChannelFollowers = async () => {
+	try {
+		const accessToken = getCookie("accessToken");
+		const Data = await axios.get(
+			`${conf.BACKEND_URL}/subscriptions/u/followers`,
+			{
+				headers: { Authorization: `Bearer ${accessToken}` },
+				withCredentials: true,
+			},
 		);
+		console.log("Followers at service:", Data.data);
+		if (!Data?.data) {
+			throw new ApiError(
+				500,
+				"Something went wrong while getting user channel followers",
+			);
+		}
+		return Data?.data;
+	} catch (error) {
+		console.log("Error: while getting user followers ", error);
+		return null;
 	}
-	return response.data;
-});
+};
 
 export {
 	getUserFollowings,
