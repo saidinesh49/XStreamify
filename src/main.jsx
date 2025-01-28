@@ -21,6 +21,7 @@ import { VideoUploadForm } from "./components/VideoUploadForm.jsx";
 import Settings from "./pages/Settings.jsx";
 import VideoPlayer from "./pages/VideoPlayer.jsx";
 import Followings from "./pages/followings.jsx";
+import TweetDetails from "./pages/TweetDetails.jsx";
 
 const router = createBrowserRouter([
 	{
@@ -56,8 +57,13 @@ const router = createBrowserRouter([
 			},
 
 			{
-				path: "/tweets/*",
+				path: "/tweets",
 				element: <Tweets />,
+			},
+
+			{
+				path: "/tweets/:tweetId",
+				element: <TweetDetails />,
 			},
 
 			{
