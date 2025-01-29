@@ -8,7 +8,7 @@ import {
 	updateAccountDetails,
 } from "../services/settingsService";
 import { Upload, Key, Image, User } from "lucide-react";
-import Loading from "../components/Loading";
+import Loading from "../utils/Loading";
 import { useNavigate } from "react-router-dom";
 
 export default function Settings() {

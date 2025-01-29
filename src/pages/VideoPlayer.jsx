@@ -7,7 +7,7 @@ import {
 	toggleChannelSubscription,
 } from "../services/channelService";
 import { useUserContext } from "../context/UserContext";
-import Loading from "../components/Loading";
+import Loading from "../utils/Loading";
 import {
 	Play,
 	Pause,

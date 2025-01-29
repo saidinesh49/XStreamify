@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getUserFollowings } from "../services/channelService";
 import { useUserContext } from "../context/UserContext";
-import Loading from "../components/Loading";
+import Loading from "../utils/Loading";
 import { LoginToAccess } from "../utils/LoginToAccess";
 
 export default function Followings() {

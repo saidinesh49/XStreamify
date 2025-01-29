@@ -2,13 +2,14 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { PageNotFound } from "../utils/PageNotFound";
 import { useUserContext } from "../context/UserContext";
-import Loading from "../components/Loading";
+import Loading from "../utils/Loading";
 import {
 	getChannelInfo,
 	toggleChannelSubscription,
 	getUserFollowings,
 	getUserChannelFollowers,
 } from "../services/channelService";
+import { getAllVideos } from "../services/videoService"; // Correct import
 
 const DEFAULT_COVER =
 	"https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1920&h=400&fit=crop&auto=format";
@@ -300,8 +301,74 @@ export function Channel() {
 							</div>
 						)}
 					</div>
+					{/* Add Videos Section */}
+					{channelData && (
+						<ChannelVideos
+							userId={channelData._id}
+							isOwnProfile={userData?.username === channelData.username}
+						/>
+					)}
 				</div>
 			)}
+		</div>
+	);
+}
+
+// Add this component at the bottom of the file
+function ChannelVideos({ userId, isOwnProfile }) {
+	const [videos, setVideos] = useState([]);
+	const [loading, setLoading] = useState(true);
+	const navigate = useNavigate();
+
+	useEffect(() => {
+		const fetchVideos = async () => {
+			try {
+				const response = await getAllVideos({ userId, page: 1, limit: 12 });
+				setVideos(response?.data?.videos || []);
+			} catch (error) {
+				console.error("Error fetching channel videos:", error);
+			} finally {
+				setLoading(false);
+			}
+		};
+
+		if (userId) fetchVideos();
+	}, [userId]);
+
+	if (loading) return <Loading />;
+
+	return (
+		<div className="mt-8 px-4 sm:px-8">
+			<h2 className="text-xl font-semibold mb-4 text-surface-800 dark:text-white">
+				{videos.length === 0 ? "No Videos Yet" : "Videos"}
+			</h2>
+			<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+				{videos.map((video) => (
+					<div
+						key={video._id}
+						className="cursor-pointer group"
+						onClick={() => navigate(`/video/${video._id}`)}
+					>
+						<div className="aspect-video rounded-lg overflow-hidden relative">
+							<img
+								src={
+									video.thumbnail ||
+									`https://placehold.co/480x270?text=${encodeURIComponent(
+										video.title,
+									)}`
+								}
+								alt={video.title}
+								className="w-full h-full object-cover"
+							/>
+							<div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-20 transition-opacity" />
+						</div>
+						<h3 className="mt-2 font-medium text-surface-800 dark:text-white truncate">
+							{video.title}
+						</h3>
+						<p className="text-sm text-surface-500">{video.views || 0} views</p>
+					</div>
+				))}
+			</div>
 		</div>
 	);
 }

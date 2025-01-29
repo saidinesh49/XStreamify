@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { MessageCircle, Heart, Share2, Send, MoreVertical } from "lucide-react";
 import { useUserContext } from "../context/UserContext";
 import { LoginToAccess } from "../utils/LoginToAccess";
-import Loading from "../components/Loading";
+import Loading from "../utils/Loading";
 import {
 	createTweet,
 	getAllTweets,
@@ -18,6 +18,7 @@ import {
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import TweetDetail from "../components/TweetDetail";
 import TweetCard from "../components/TweetCard";
+import { toast } from "react-toastify";
 
 export default function Tweets() {
 	const { userData } = useUserContext();

@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 import {
 	User,
 	Video,
@@ -36,16 +36,29 @@ export default function ProfileDropdown({ isOpen, onClose }) {
 		}
 	};
 
+	const handleClickYourVideos = async () => {
+		try {
+			if (!userData?.username) {
+				navigate("/login");
+				return;
+			}
+			navigate(`/your-videos`);
+		} catch (error) {
+			console.log("Error: while fetching channel videos", error);
+			return null;
+		}
+	};
+
 	const handleLogOut = async () => {
 		try {
 			const res = await logoutUser(removeUserData);
-			toast.success('Logged out successfully. See you soon!', {
-				icon: '👋'
+			toast.success("Logged out successfully. See you soon!", {
+				icon: "👋",
 			});
 			navigate("login");
 		} catch (error) {
-			toast.error('Error logging out. Please try again.', {
-				icon: '⚠️'
+			toast.error("Error logging out. Please try again.", {
+				icon: "⚠️",
 			});
 			console.log("Error: while logout client, ", error);
 		}
@@ -60,7 +73,14 @@ export default function ProfileDropdown({ isOpen, onClose }) {
 				handleClickYourChannel();
 			},
 		},
-		{ icon: Video, label: "Your Videos", action: () => {} },
+		{
+			icon: Video,
+			label: "Your Videos",
+			action: () => {
+				onClose();
+				handleClickYourVideos();
+			},
+		},
 		{ icon: BarChart3, label: "Analytics", action: () => {} },
 		{
 			icon: Upload,
@@ -71,18 +91,18 @@ export default function ProfileDropdown({ isOpen, onClose }) {
 			},
 		},
 		{ icon: PlusCircle, label: "Create Post", action: () => {} },
-		{ 
-			icon: Settings, 
-			label: "Settings", 
+		{
+			icon: Settings,
+			label: "Settings",
 			action: () => {
 				onClose(); // Close the dropdown
 				navigate("/settings");
-			}
+			},
 		},
 		{
 			icon: LogOut,
 			label: "Sign Out",
-			action: async() => {
+			action: async () => {
 				handleLogOut();
 			},
 		},

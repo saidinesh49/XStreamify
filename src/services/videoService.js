@@ -47,6 +47,7 @@ const uploadVideo = async (videoData) => {
 		}
 
 		// Get the full path and append it as a field
+		console.log("Video Data: ", videoData);
 		console.log("videoData Video File:", videoData.videoFile);
 		console.log("VideoData Thumbnail File:", videoData.thumbnail);
 
@@ -136,6 +137,10 @@ const updateVideo = async (videoId, { title, description, thumbnail }) => {
 // Delete a video
 const deleteVideo = async (videoId) => {
 	try {
+		if (!videoId) {
+			console.log("videoId is required!");
+			return null;
+		}
 		const accessToken = getCookie("accessToken");
 		if (!accessToken) {
 			console.log("No access token found");

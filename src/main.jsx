@@ -22,6 +22,7 @@ import Settings from "./pages/Settings.jsx";
 import VideoPlayer from "./pages/VideoPlayer.jsx";
 import Followings from "./pages/followings.jsx";
 import TweetDetails from "./pages/TweetDetails.jsx";
+import YourVideos from "./pages/YourVideos.jsx";
 
 const router = createBrowserRouter([
 	{
@@ -96,6 +97,10 @@ const router = createBrowserRouter([
 				element: <Channel />,
 			},
 
+			{
+				path: "/your-videos",
+				element: <YourVideos />,
+			},
 			{
 				path: "/404NotFound",
 				element: <PageNotFound />,

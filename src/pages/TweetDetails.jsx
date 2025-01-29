@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Send } from "lucide-react";
 import { toast } from "react-toastify";
 import TweetCard from "../components/TweetCard";
-import Loading from "../components/Loading";
+import Loading from "../utils/Loading";
 import { useUserContext } from "../context/UserContext";
 import {
 	getTweetById,
@@ -104,6 +104,10 @@ export default function TweetDetails() {
 		navigate(`/c/${username}`);
 	};
 
+	const handleOptionsClick = () => {
+		setShowOptions(!showOptions);
+	};
+
 	if (isLoading) {
 		return <Loading />;
 	}
@@ -127,7 +131,8 @@ export default function TweetDetails() {
 						onDelete={handleDelete}
 						onOwnerClick={handleProfileNavigate}
 						showOptions={showOptions}
-						onOptionsClick={() => setShowOptions(!showOptions)}
+						onOptionsClick={handleOptionsClick}
+						hideNavigation // Add this to prevent navigation when clicking the tweet
 					/>
 
 					{/* Comments Section */}

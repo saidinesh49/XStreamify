@@ -11,11 +11,15 @@ export default function TweetCard({
 	onClick,
 	showOptions,
 	onOptionsClick,
+	hideNavigation, // Add this prop
 }) {
 	return (
 		<div
-			onClick={onClick}
-			className="bg-white dark:bg-surface-800 rounded-xl p-4 shadow-sm cursor-pointer hover:bg-blue-50 dark:hover:bg-surface-700/50 transition-colors"
+			onClick={hideNavigation ? undefined : onClick}
+			className={`bg-white dark:bg-surface-800 rounded-xl p-4 shadow-sm ${
+				!hideNavigation &&
+				"cursor-pointer hover:bg-blue-50 dark:hover:bg-surface-700/50"
+			} transition-colors`}
 		>
 			<div className="flex items-start gap-3">
 				<img
@@ -53,13 +57,14 @@ export default function TweetCard({
 								<button
 									onClick={(e) => {
 										e.stopPropagation();
-										onOptionsClick(tweet._id);
+										onOptionsClick(hideNavigation ? null : tweet._id);
 									}}
 									className="p-1.5 hover:bg-surface-200 dark:hover:bg-surface-600 rounded-full transition-colors"
 								>
 									<MoreVertical className="w-5 h-5 text-surface-600 dark:text-surface-300" />
 								</button>
-								{showOptions === tweet._id && (
+								{(showOptions === tweet._id ||
+									(hideNavigation && showOptions)) && (
 									<div className="absolute right-0 mt-1 w-48 bg-white dark:bg-surface-900 rounded-lg shadow-lg z-10">
 										<button
 											onClick={(e) => {
