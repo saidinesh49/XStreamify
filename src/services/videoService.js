@@ -2,6 +2,29 @@ import axios from "axios";
 import conf from "../conf/conf";
 import { getCookie } from "./authService";
 
+// Upload a video to Cloudinary
+const uploadToCloudinary = async (file, resource_type = "image") => {
+	try {
+		const formData = new FormData();
+		formData.append("file", file);
+		formData.append("upload_preset", conf.UPLOAD_PRESET);
+
+		const response = await fetch(
+			`${conf.CLOUDINARY_URL}/${resource_type}/upload`,
+			{
+				method: "POST",
+				body: formData,
+			},
+		);
+
+		const data = await response.json();
+		return data; // Return the URL of the uploaded video
+	} catch (error) {
+		console.error("Error uploading video to Cloudinary:", error);
+		throw error;
+	}
+};
+
 // Fetch all videos with optional filters, sorting, and pagination
 const getAllVideos = async ({
 	page = 1,
@@ -39,37 +62,44 @@ const getAllVideos = async ({
 // Upload a video
 const uploadVideo = async (videoData) => {
 	try {
-		const formData = new FormData();
-
 		// Ensure all required fields are present
-		if (!videoData.title || !videoData.description || !videoData.videoFile) {
+		if (!videoData?.title || !videoData?.description || !videoData?.videoFile) {
 			throw new Error("Missing required fields");
 		}
 
-		// Get the full path and append it as a field
-		console.log("Video Data: ", videoData);
-		console.log("videoData Video File:", videoData.videoFile);
-		console.log("VideoData Thumbnail File:", videoData.thumbnail);
+		console.log("Video data: Before: ", videoData);
 
-		const videoPath = videoData.videoFile.path || videoData.videoFile;
-		formData.append("videoFile", videoPath);
-		formData.append("title", videoData.title);
-		formData.append("description", videoData.description);
+		// Upload video to Cloudinary
+		const video = await uploadToCloudinary(videoData.videoFile, "video");
 
-		if (videoData.thumbnail) {
-			const thumbnailPath = videoData.thumbnail.path || videoData.thumbnail;
-			formData.append("videothumbnail", thumbnailPath);
+		console.log("After video upload: ", video);
+
+		// Upload thumbnail to Cloudinary if provided
+		let thumbnail = "";
+		if (videoData?.thumbnail) {
+			thumbnail = await uploadToCloudinary(videoData.thumbnail, "image");
 		}
 
+		// Send video details to backend
 		const accessToken = getCookie("accessToken");
-
-		const response = await axios.post(`${conf.BACKEND_URL}/videos/`, formData, {
-			headers: {
-				Authorization: `Bearer ${accessToken}`,
-				"Content-Type": "multipart/form-data",
+		const response = await axios.post(
+			`${conf.BACKEND_URL}/videos/`,
+			{
+				title: videoData.title,
+				description: videoData.description,
+				videoUrl: video?.secure_url,
+				duration: video?.duration,
+				thumbnailUrl: thumbnail?.secure_url || "",
 			},
-			withCredentials: true,
-		});
+			{
+				headers: {
+					Authorization: `Bearer ${accessToken}`,
+				},
+				withCredentials: true,
+			},
+		);
+
+		console.log(response);
 
 		return response.data;
 	} catch (error) {
