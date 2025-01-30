@@ -158,11 +158,11 @@ const isUserSubcribedToChannel = asyncHandler(async (channelId) => {
 	return false;
 });
 
-const getUserChannelFollowers = async () => {
+const getUserChannelFollowers = async (channelId) => {
 	try {
 		const accessToken = getCookie("accessToken");
 		const Data = await axios.get(
-			`${conf.BACKEND_URL}/subscriptions/u/followers`,
+			`${conf.BACKEND_URL}/subscriptions/${channelId}/followers`,
 			{
 				headers: { Authorization: `Bearer ${accessToken}` },
 				withCredentials: true,

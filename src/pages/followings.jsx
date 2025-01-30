@@ -41,7 +41,7 @@ export default function Followings() {
 
 	if (isLoading) {
 		return (
-			<div className="flex justify-center items-center min-h-[calc(100vh-5rem)]">
+			<div className="flex justify-center items-center h-screen">
 				<Loading />
 			</div>
 		);

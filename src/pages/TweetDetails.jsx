@@ -109,7 +109,11 @@ export default function TweetDetails() {
 	};
 
 	if (isLoading) {
-		return <Loading />;
+		return (
+			<div className="flex justify-center items-center h-screen">
+				<Loading />
+			</div>
+		);
 	}
 
 	return (

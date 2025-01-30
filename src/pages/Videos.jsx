@@ -36,7 +36,12 @@ export default function Videos() {
 		fetchVideos();
 	}, []);
 
-	if (isLoading) return <Loading />;
+	if (isLoading)
+		return (
+			<div className="flex justify-center items-center h-screen">
+				<Loading />
+			</div>
+		);
 	if (error)
 		return <div className="text-center text-red-500 pt-20">{error}</div>;
 

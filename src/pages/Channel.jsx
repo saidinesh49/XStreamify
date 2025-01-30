@@ -79,7 +79,7 @@ export function Channel() {
 
 	const fetchFollowers = async () => {
 		try {
-			const response = await getUserChannelFollowers();
+			const response = await getUserChannelFollowers(channelData?._id);
 			console.log("followers:", response);
 			setFollowers(response?.data || []);
 		} catch (error) {
