@@ -4,6 +4,7 @@ import { getUserFollowings } from "../services/channelService";
 import { useUserContext } from "../context/UserContext";
 import Loading from "../utils/Loading";
 import { LoginToAccess } from "../utils/LoginToAccess";
+import { toast } from "react-toastify";
 
 export default function Followings() {
 	const [followings, setFollowings] = useState([]);
@@ -15,6 +16,11 @@ export default function Followings() {
 	useEffect(() => {
 		const fetchFollowings = async () => {
 			try {
+				if (!userData?.username) {
+					navigate("/login");
+					toast.warn("Please login!");
+					return;
+				}
 				setIsLoading(true);
 				const response = await getUserFollowings(userData?._id);
 				if (response?.data) {
@@ -29,15 +35,7 @@ export default function Followings() {
 		};
 
 		fetchFollowings();
-	}, []);
-
-	if (!userData?.username) {
-		return (
-			<div className="pt-20">
-				<LoginToAccess />
-			</div>
-		);
-	}
+	}, [userData]);
 
 	if (isLoading) {
 		return (

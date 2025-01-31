@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUserContext } from "../context/UserContext";
 import { uploadVideo } from "../services/videoService";
@@ -16,6 +16,13 @@ export function VideoUploadForm() {
 	const [uploadProgress, setUploadProgress] = useState(0);
 	const { userData } = useUserContext();
 	const navigate = useNavigate();
+	useEffect(() => {
+		if (!userData?.username) {
+			navigate("/login");
+			toast.warn("Please login to access!");
+			return;
+		}
+	}, [userData]);
 
 	const handleVideoUpload = async (e) => {
 		e.preventDefault();

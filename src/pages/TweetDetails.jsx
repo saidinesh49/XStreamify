@@ -26,6 +26,11 @@ export default function TweetDetails() {
 	const [showOptions, setShowOptions] = useState(false);
 
 	useEffect(() => {
+		if (!userData?.username) {
+			navigate("/login");
+			toast.warn("Please login to access!");
+			return;
+		}
 		loadTweetDetails();
 	}, [tweetId]);
 

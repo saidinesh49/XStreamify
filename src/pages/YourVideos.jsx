@@ -28,6 +28,10 @@ export default function YourVideos() {
 
 		if (userData?._id) {
 			fetchVideos();
+		} else {
+			navigate("/login");
+			toast.warn("Please login to access!");
+			return;
 		}
 	}, [userData]);
 

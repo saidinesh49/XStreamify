@@ -102,7 +102,7 @@ const router = createBrowserRouter([
 				element: <YourVideos />,
 			},
 			{
-				path: "/404NotFound",
+				path: "/*",
 				element: <PageNotFound />,
 			},
 		],

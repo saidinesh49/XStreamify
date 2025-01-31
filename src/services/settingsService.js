@@ -1,6 +1,7 @@
 import axios from "axios";
 import conf from "../conf/conf";
 import { getCookie } from "./authService";
+import { uploadToCloudinary } from "./cloudinaryService";
 
 export const changePassword = async (oldPassword, newPassword) => {
 	try {
@@ -25,7 +26,11 @@ export const changePassword = async (oldPassword, newPassword) => {
 export const updateAvatar = async (avatarFile) => {
 	try {
 		const formData = new FormData();
-		formData.append("avatar", avatarFile);
+		const avatar = await uploadToCloudinary(avatarFile, "image");
+		if (!avatar?.secure_url) {
+			throw new Error("Error uploading avatar to Cloudinary");
+		}
+		formData.append("avatarUrl", avatar?.secure_url);
 
 		const response = await axios.patch(
 			`${conf.BACKEND_URL}/users/update-avatar`,
@@ -48,7 +53,11 @@ export const updateAvatar = async (avatarFile) => {
 export const updateCoverImage = async (coverImageFile) => {
 	try {
 		const formData = new FormData();
-		formData.append("coverImage", coverImageFile);
+		const coverImage = await uploadToCloudinary(coverImageFile, "image");
+		if (!coverImage?.secure_url) {
+			throw new Error("Error uploading cover image to Cloudinary");
+		}
+		formData.append("coverImageUrl", coverImage?.secure_url);
 
 		const response = await axios.patch(
 			`${conf.BACKEND_URL}/users/update-coverimage`,
