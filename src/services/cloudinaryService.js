@@ -26,6 +26,7 @@ const uploadToCloudinary = async (file, resource_type = "OTHER") => {
 			{
 				method: "POST",
 				body: formData,
+				mode: "cors",
 			},
 		);
 
