@@ -41,7 +41,12 @@ const getAllVideos = async ({
 const uploadVideo = async (videoData) => {
 	try {
 		// Ensure all required fields are present
-		if (!videoData?.title || !videoData?.description || !videoData?.videoFile) {
+		if (
+			!videoData?.title ||
+			!videoData?.description ||
+			!videoData?.videoFile ||
+			!videoData?.thumbnail
+		) {
 			throw new Error("Missing required fields");
 		}
 
@@ -57,17 +62,15 @@ const uploadVideo = async (videoData) => {
 		}
 
 		// Upload thumbnail to Cloudinary if provided
-		let thumbnailUrl = "";
-		if (videoData?.thumbnail) {
-			const thumbnail = await uploadToCloudinary(
-				videoData.thumbnail,
-				"THUMBNAIL",
-			);
-			if (!thumbnail?.secure_url) {
-				throw new Error("Failed to upload thumbnail to Cloudinary");
-			}
-			thumbnailUrl = thumbnail?.secure_url;
+		console.log("Entered for thumbnail");
+		const thumbnail = await uploadToCloudinary(
+			videoData.thumbnail,
+			"THUMBNAIL",
+		);
+		if (!thumbnail?.secure_url) {
+			throw new Error("Failed to upload thumbnail to Cloudinary");
 		}
+		const thumbnailUrl = thumbnail?.secure_url;
 
 		// Send video details to backend
 		const accessToken = getCookie("accessToken");
@@ -78,7 +81,7 @@ const uploadVideo = async (videoData) => {
 				description: videoData.description,
 				videoUrl: video?.secure_url,
 				duration: video?.duration,
-				thumbnailUrl: thumbnailUrl || "",
+				thumbnailUrl: thumbnailUrl,
 			},
 			{
 				headers: {

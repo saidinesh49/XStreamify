@@ -24,19 +24,33 @@ export function VideoUploadForm() {
 		}
 	}, [userData]);
 
+	const validateForm = () => {
+		if (!title.trim()) {
+			setError("Title is required");
+			toast.error("Title is required");
+			return false;
+		}
+		if (!description.trim()) {
+			setError("Description is required");
+			toast.error("Description is required");
+			return false;
+		}
+		if (!videoFile) {
+			setError("Video file is required");
+			toast.error("Video file is required");
+			return false;
+		}
+		if (!thumbnail) {
+			setError("Thumbnail is required");
+			toast.error("Thumbnail is required");
+			return false;
+		}
+		return true;
+	};
+
 	const handleVideoUpload = async (e) => {
 		e.preventDefault();
-		if (!userData?.username) {
-			toast.error("Please log in to upload a video");
-			setError("Please log in to upload a video");
-			return;
-		}
-
-		if (!title || !description || !videoFile) {
-			toast.error("Title, description, and video file are required");
-			setError("Title, description, and video file are required");
-			return;
-		}
+		if (!validateForm()) return;
 
 		setLoading(true);
 		setError(null);
@@ -130,7 +144,7 @@ export function VideoUploadForm() {
 
 					<div>
 						<label className="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
-							Video File
+							Video File *
 						</label>
 						<div className="relative">
 							<input
@@ -139,15 +153,18 @@ export function VideoUploadForm() {
 								onChange={(e) => setVideoFile(e.target.files[0])}
 								className="hidden"
 								id="video-upload"
-								required
 							/>
 							<label
 								htmlFor="video-upload"
-								className="flex items-center gap-3 px-4 py-3 bg-surface-50 dark:bg-surface-700 border-2 border-dashed border-surface-300 dark:border-surface-500 rounded-lg cursor-pointer hover:border-primary-500 dark:hover:border-primary-400 transition-colors"
+								className={`flex items-center gap-3 px-4 py-3 border-2 border-dashed rounded-lg cursor-pointer transition-colors ${
+									!videoFile
+										? "bg-surface-50 dark:bg-surface-700 border-surface-300 dark:border-surface-500"
+										: "bg-surface-100 dark:bg-surface-600 border-primary-500"
+								}`}
 							>
 								<FileVideo className="w-5 h-5 text-surface-500 dark:text-surface-400" />
 								<span className="text-surface-600 dark:text-surface-300">
-									{videoFile ? videoFile.name : "Choose video file"}
+									{videoFile ? videoFile.name : "Choose video file *"}
 								</span>
 							</label>
 						</div>
@@ -155,7 +172,7 @@ export function VideoUploadForm() {
 
 					<div>
 						<label className="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
-							Thumbnail (Optional)
+							Thumbnail *
 						</label>
 						<div className="relative">
 							<input
@@ -167,24 +184,35 @@ export function VideoUploadForm() {
 							/>
 							<label
 								htmlFor="thumbnail-upload"
-								className="flex items-center gap-3 px-4 py-3 bg-surface-50 dark:bg-surface-700 border-2 border-dashed border-surface-300 dark:border-surface-500 rounded-lg cursor-pointer hover:border-primary-500 dark:hover:border-primary-400 transition-colors"
+								className={`flex items-center gap-3 px-4 py-3 border-2 border-dashed rounded-lg cursor-pointer transition-colors ${
+									!thumbnail
+										? "bg-surface-50 dark:bg-surface-700 border-surface-300 dark:border-surface-500"
+										: "bg-surface-100 dark:bg-surface-600 border-primary-500"
+								}`}
 							>
 								<Image className="w-5 h-5 text-surface-500 dark:text-surface-400" />
 								<span className="text-surface-600 dark:text-surface-300">
-									{thumbnail ? thumbnail.name : "Choose thumbnail image"}
+									{thumbnail ? thumbnail.name : "Choose thumbnail image *"}
 								</span>
 							</label>
+							{!thumbnail && (
+								<p className="mt-1 text-xs text-red-500">
+									Thumbnail is required for better video preview
+								</p>
+							)}
 						</div>
 					</div>
 
 					<button
 						type="submit"
-						disabled={isLoading}
-						className="w-full py-3 px-4 bg-primary-600 hover:bg-primary-700 text-white rounded-lg font-medium transition-colors disabled:bg-primary-300 dark:disabled:bg-primary-800 flex items-center justify-center gap-2"
+						disabled={
+							isLoading || !title || !description || !videoFile || !thumbnail
+						}
+						className="w-full inline-flex items-center justify-center gap-2 py-3 px-4 bg-primary-600 hover:bg-primary-700 text-white rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
 					>
 						{isLoading ? (
 							<>
-								<Loading />
+								<Loading size="sm" />
 								<span>Uploading...</span>
 							</>
 						) : (
