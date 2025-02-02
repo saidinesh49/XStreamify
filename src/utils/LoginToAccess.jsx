@@ -1,7 +1,7 @@
 function LoginToAccess() {
 	return (
-		<div className="flex flex-col justify-center items-center text-lg text-yellow-300">
-			<p className="text-black dark:text-white">401 Unathorized!</p>
+		<div className="flex flex-col justify-center items-center text-lg text-yellow-600 dark:text-yellow-300">
+			<p className="text-black dark:text-white">401 Unauthorized!</p>
 			<p>You don't have access to this resource!</p>
 			<a
 				href="/login"

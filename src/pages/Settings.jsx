@@ -25,7 +25,7 @@ export default function Settings() {
 		if (!userData?.username) {
 			navigate("/login");
 		}
-	}, [userData, navigate]);
+	}, [userData]);
 
 	// Account details states
 	const [accountData, setAccountData] = useState({

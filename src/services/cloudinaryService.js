@@ -3,14 +3,26 @@ import conf from "../conf/conf";
 import { getCookie } from "./authService";
 
 // Upload a video to Cloudinary
-const uploadToCloudinary = async (file, resource_type = "image") => {
+const uploadToCloudinary = async (file, resource_type = "OTHER") => {
 	try {
 		const formData = new FormData();
 		formData.append("file", file);
-		formData.append("upload_preset", conf.UPLOAD_PRESET);
+		let upload_preset;
+		if (resource_type === "THUMBNAIL")
+			upload_preset = conf.THUMBNAIL_UPLOAD_PRESET;
+		else if (resource_type === "VIDEO")
+			upload_preset = conf.VIDEO_UPLOAD_PRESET;
+		else if (resource_type === "COVERIMAGE")
+			upload_preset = conf.COVERIMAGE_UPLOAD_PRESET;
+		else if (resource_type === "AVATAR")
+			upload_preset = conf.AVATAR_UPLOAD_PRESET;
+		else upload_preset = conf.OTHER_UPLOAD_PRESET;
+		formData.append("upload_preset", upload_preset);
 
 		const response = await fetch(
-			`${conf.CLOUDINARY_URL}/${resource_type}/upload`,
+			`${conf.CLOUDINARY_URL}/${
+				resource_type === "VIDEO" ? "video" : "image"
+			}/upload`,
 			{
 				method: "POST",
 				body: formData,

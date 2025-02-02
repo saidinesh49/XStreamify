@@ -131,35 +131,53 @@ const registerUser = async (
 		// Implementation here
 		if (!username || !password || !email || !avatar) {
 			throw new Error("All data is required to register.");
-			return null;
 		}
-		const form = new FormData();
-		form.append("fullName", fullName);
-		form.append("username", username);
-		form.append("password", password);
-		form.append("email", email);
-		const avatarResponse = await uploadToCloudinary(avatar, "image");
+		// const form = {};
+		// form.fullName = fullName;
+		// form.username = username;
+		// form.password = password;
+		// form.email = email;
+		const avatarResponse = await uploadToCloudinary(avatar, "AVATAR");
+		console.log("Avatar after upload to Cloudinary: ", avatarResponse);
 		if (!avatarResponse?.secure_url) {
 			throw new Error("Failed to upload avatar to Cloudinary");
 		}
 
-		form.append("avatarUrl", avatarResponse?.secure_url);
+		// form.avatarUrl = avatarResponse?.secure_url;
+		let coverImageUrl = "";
 
 		if (coverImage) {
-			const coverImageResponse = await uploadToCloudinary(coverImage, "image");
+			const coverImageResponse = await uploadToCloudinary(
+				coverImage,
+				"COVERIMAGE",
+			);
 			if (!coverImageResponse?.secure_url) {
 				throw new Error("Failed to upload cover image to Cloudinary");
 			}
 
-			form.append("coverImageUrl", coverImageResponse?.secure_url);
+			coverImageUrl = coverImageResponse?.secure_url;
 		}
 
+		// console.log("Forwarding form data is: ", form);
+
 		const Data = await axios
-			.post(`${conf.BACKEND_URL}/users/register`, form, {
-				headers: {
-					"Content-Type": "multipart/form-data",
+			.post(
+				`${conf.BACKEND_URL}/users/register`,
+				{
+					fullName,
+					username,
+					password,
+					email,
+					avatarUrl: avatarResponse?.secure_url,
+					coverImageUrl,
 				},
-			})
+				{
+					headers: {
+						"Content-Type": "application/json",
+					},
+					withCredentials: true,
+				},
+			)
 			.then((res) => res.data);
 
 		if (!Data) {

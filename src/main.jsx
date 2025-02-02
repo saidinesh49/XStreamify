@@ -23,6 +23,7 @@ import VideoPlayer from "./pages/VideoPlayer.jsx";
 import Followings from "./pages/followings.jsx";
 import TweetDetails from "./pages/TweetDetails.jsx";
 import YourVideos from "./pages/YourVideos.jsx";
+import EditVideo from "./pages/EditVideo";
 
 const router = createBrowserRouter([
 	{
@@ -88,7 +89,7 @@ const router = createBrowserRouter([
 			},
 
 			{
-				path: "/video/:videoId",
+				path: "/videos/:videoId",
 				element: <VideoPlayer />,
 			},
 
@@ -100,6 +101,10 @@ const router = createBrowserRouter([
 			{
 				path: "/your-videos",
 				element: <YourVideos />,
+			},
+			{
+				path: "/videos/:videoId/edit",
+				element: <EditVideo />,
 			},
 			{
 				path: "/*",

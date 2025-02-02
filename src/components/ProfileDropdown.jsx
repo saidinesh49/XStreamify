@@ -90,7 +90,6 @@ export default function ProfileDropdown({ isOpen, onClose }) {
 				navigate("/uploadVideo");
 			},
 		},
-		{ icon: PlusCircle, label: "Create Post", action: () => {} },
 		{
 			icon: Settings,
 			label: "Settings",

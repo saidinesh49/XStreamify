@@ -10,6 +10,9 @@ import {
 	getUserChannelFollowers,
 } from "../services/channelService";
 import { getAllVideos } from "../services/videoService"; // Correct import
+import VideoCard from "../components/VideoCard";
+import { deleteVideo } from "../services/videoService";
+import { toast } from "react-toastify";
 
 const DEFAULT_COVER =
 	"https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1920&h=400&fit=crop&auto=format";
@@ -27,6 +30,8 @@ export function Channel() {
 	const [showFollowings, setShowFollowings] = useState(false);
 	const [followers, setFollowers] = useState([]);
 	const [showFollowers, setShowFollowers] = useState(false);
+	const [isFollowingsLoading, setFollowingsLoading] = useState(true);
+	const [isFollowersLoading, setFollowersLoading] = useState(true);
 
 	const channelProfileDetails = async () => {
 		setLoading(true);
@@ -64,11 +69,14 @@ export function Channel() {
 
 	const fetchFollowings = async () => {
 		try {
+			setFollowingsLoading(true);
 			const response = await getUserFollowings(channelData?._id);
 			console.log("followings:", response);
 			setFollowings(response?.data || []);
 		} catch (error) {
 			console.log("Error fetching followings:", error);
+		} finally {
+			setFollowingsLoading(false);
 		}
 	};
 
@@ -79,12 +87,15 @@ export function Channel() {
 
 	const fetchFollowers = async () => {
 		try {
+			setFollowersLoading(true);
 			const response = await getUserChannelFollowers(channelData?._id);
 			console.log("followers:", response);
 			setFollowers(response?.data || []);
 		} catch (error) {
 			console.log("Error fetching followers:", error);
 			setFollowers([]);
+		} finally {
+			setFollowersLoading(false);
 		}
 	};
 
@@ -98,7 +109,9 @@ export function Channel() {
 	}, [username]);
 
 	return isloading === true ? (
-		<Loading />
+		<div className="flex justify-center items-center h-screen">
+			<Loading />
+		</div>
 	) : (
 		<div className="pt-16">
 			{error && <div className="error-message">{error}</div>}
@@ -210,7 +223,9 @@ export function Channel() {
 										</button>
 									</div>
 									<div className="p-4 max-h-[60vh] overflow-y-auto">
-										{followings.length === 0 ? (
+										{isFollowingsLoading === true ? (
+											<Loading />
+										) : followings.length === 0 ? (
 											<p className="text-center text-gray-500 dark:text-gray-400">
 												Not following any channels yet
 											</p>
@@ -263,7 +278,9 @@ export function Channel() {
 										</button>
 									</div>
 									<div className="p-4 max-h-[60vh] overflow-y-auto">
-										{followers.length === 0 ? (
+										{isFollowersLoading === true ? (
+											<Loading />
+										) : followers.length === 0 ? (
 											<p className="text-center text-gray-500 dark:text-gray-400">
 												No Followers yet
 											</p>
@@ -314,26 +331,43 @@ export function Channel() {
 	);
 }
 
-// Add this component at the bottom of the file
+// Update ChannelVideos component at the bottom of Channel.jsx
 function ChannelVideos({ userId, isOwnProfile }) {
 	const [videos, setVideos] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const navigate = useNavigate();
 
-	useEffect(() => {
-		const fetchVideos = async () => {
-			try {
-				const response = await getAllVideos({ userId, page: 1, limit: 12 });
-				setVideos(response?.data?.videos || []);
-			} catch (error) {
-				console.error("Error fetching channel videos:", error);
-			} finally {
-				setLoading(false);
-			}
-		};
+	const fetchVideos = async () => {
+		try {
+			const response = await getAllVideos({ userId, page: 1, limit: 12 });
+			setVideos(response?.data?.videos || []);
+		} catch (error) {
+			console.error("Error fetching channel videos:", error);
+		} finally {
+			setLoading(false);
+		}
+	};
 
+	useEffect(() => {
 		if (userId) fetchVideos();
 	}, [userId]);
+
+	const handleDelete = async (videoId) => {
+		if (window.confirm("Are you sure you want to delete this video?")) {
+			try {
+				await deleteVideo(videoId);
+				toast.success("Video deleted successfully");
+				fetchVideos();
+			} catch (error) {
+				toast.error("Failed to delete video");
+			}
+		}
+	};
+
+	const handleEdit = (video) => {
+		// TODO: Implement edit functionality
+		console.log("Edit video:", video);
+	};
 
 	if (loading) return <Loading />;
 
@@ -344,29 +378,13 @@ function ChannelVideos({ userId, isOwnProfile }) {
 			</h2>
 			<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
 				{videos.map((video) => (
-					<div
+					<VideoCard
 						key={video._id}
-						className="cursor-pointer group"
-						onClick={() => navigate(`/video/${video._id}`)}
-					>
-						<div className="aspect-video rounded-lg overflow-hidden relative">
-							<img
-								src={
-									video.thumbnail ||
-									`https://placehold.co/480x270?text=${encodeURIComponent(
-										video.title,
-									)}`
-								}
-								alt={video.title}
-								className="w-full h-full object-cover"
-							/>
-							<div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-20 transition-opacity" />
-						</div>
-						<h3 className="mt-2 font-medium text-surface-800 dark:text-white truncate">
-							{video.title}
-						</h3>
-						<p className="text-sm text-surface-500">{video.views || 0} views</p>
-					</div>
+						video={video}
+						isOwner={isOwnProfile}
+						onDelete={handleDelete}
+						onEdit={handleEdit}
+					/>
 				))}
 			</div>
 		</div>

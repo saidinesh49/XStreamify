@@ -3,9 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { Upload, Play } from "lucide-react";
 import { useUserContext } from "../context/UserContext";
 import { LoginToAccess } from "../utils/LoginToAccess";
-import { getAllVideos } from "../services/videoService";
+import {
+	getAllVideos,
+	deleteVideo,
+	updateVideo,
+} from "../services/videoService";
 import { toast } from "react-toastify";
 import Loading from "../utils/Loading";
+import VideoCard from "../components/VideoCard";
 
 export default function YourVideos() {
 	const [videos, setVideos] = useState([]);
@@ -13,19 +18,19 @@ export default function YourVideos() {
 	const navigate = useNavigate();
 	const { userData } = useUserContext();
 
-	useEffect(() => {
-		const fetchVideos = async () => {
-			try {
-				setLoading(true);
-				const response = await getAllVideos({ userId: userData?._id });
-				setVideos(response?.data?.videos || []);
-			} catch (error) {
-				toast.error("Failed to load videos");
-			} finally {
-				setLoading(false);
-			}
-		};
+	const fetchVideos = async () => {
+		try {
+			setLoading(true);
+			const response = await getAllVideos({ userId: userData?._id });
+			setVideos(response?.data?.videos || []);
+		} catch (error) {
+			toast.error("Failed to load videos");
+		} finally {
+			setLoading(false);
+		}
+	};
 
+	useEffect(() => {
 		if (userData?._id) {
 			fetchVideos();
 		} else {
@@ -34,6 +39,32 @@ export default function YourVideos() {
 			return;
 		}
 	}, [userData]);
+
+	const handleDelete = async (videoId) => {
+		try {
+			await deleteVideo(videoId);
+			toast.success("Video deleted successfully");
+			fetchVideos();
+		} catch (error) {
+			toast.error("Failed to delete video");
+		}
+	};
+
+	const handleEdit = async (video) => {
+		try {
+			// For now, navigate to edit page with video data
+			// Later we can implement inline editing or a modal
+			navigate(`/uploadVideo`, {
+				state: {
+					isEditing: true,
+					videoData: video,
+				},
+			});
+		} catch (error) {
+			toast.error("Failed to edit video");
+			console.error("Error editing video:", error);
+		}
+	};
 
 	if (!userData?.username) {
 		return <LoginToAccess />;
@@ -65,37 +96,17 @@ export default function YourVideos() {
 
 				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
 					{videos.map((video) => (
-						<div
+						<VideoCard
 							key={video._id}
-							className="group relative cursor-pointer"
-							onClick={() => navigate(`/video/${video._id}`)}
-						>
-							<div className="aspect-video rounded-lg overflow-hidden bg-surface-100 dark:bg-surface-800 relative">
-								<img
-									src={
-										video.thumbnail ||
-										`https://placehold.co/480x270/1f2937/ffffff?text=${encodeURIComponent(
-											video.title,
-										)}`
-									}
-									alt={video.title}
-									className="w-full h-full object-cover group-hover:opacity-75 transition-opacity"
-								/>
-								<div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/50">
-									<Play className="w-12 h-12 text-white" fill="white" />
-								</div>
-							</div>
-							<div className="mt-2">
-								<h3 className="font-medium text-surface-800 dark:text-white truncate">
-									{video.title}
-								</h3>
-								<div className="flex items-center gap-2 text-sm text-surface-500">
-									<span>{video.views || 0} views</span>
-									<span>•</span>
-									<span>{new Date(video.createdAt).toLocaleDateString()}</span>
-								</div>
-							</div>
-						</div>
+							video={video}
+							isOwner={true}
+							onDelete={() => {
+								handleDelete(video?._id);
+							}}
+							onEdit={() => {
+								handleEdit(video);
+							}}
+						/>
 					))}
 				</div>
 

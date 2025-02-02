@@ -25,20 +25,23 @@ export const changePassword = async (oldPassword, newPassword) => {
 
 export const updateAvatar = async (avatarFile) => {
 	try {
-		const formData = new FormData();
-		const avatar = await uploadToCloudinary(avatarFile, "image");
+		// const formData = new FormData();
+		const avatar = await uploadToCloudinary(avatarFile, "AVATAR");
 		if (!avatar?.secure_url) {
 			throw new Error("Error uploading avatar to Cloudinary");
 		}
-		formData.append("avatarUrl", avatar?.secure_url);
+
+		const avatarUrl = avatar?.secure_url;
 
 		const response = await axios.patch(
 			`${conf.BACKEND_URL}/users/update-avatar`,
-			formData,
+			{
+				avatarUrl,
+			},
 			{
 				headers: {
 					Authorization: `Bearer ${getCookie("accessToken")}`,
-					"Content-Type": "multipart/form-data",
+					"Content-Type": "application/json",
 				},
 				withCredentials: true,
 			},
@@ -52,20 +55,22 @@ export const updateAvatar = async (avatarFile) => {
 
 export const updateCoverImage = async (coverImageFile) => {
 	try {
-		const formData = new FormData();
-		const coverImage = await uploadToCloudinary(coverImageFile, "image");
+		// const formData = new FormData();
+		const coverImage = await uploadToCloudinary(coverImageFile, "COVERIMAGE");
 		if (!coverImage?.secure_url) {
 			throw new Error("Error uploading cover image to Cloudinary");
 		}
-		formData.append("coverImageUrl", coverImage?.secure_url);
+		// formData.append("coverImageUrl", coverImage?.secure_url);
 
 		const response = await axios.patch(
 			`${conf.BACKEND_URL}/users/update-coverimage`,
-			formData,
+			{
+				coverImageUrl: coverImage?.secure_url,
+			},
 			{
 				headers: {
 					Authorization: `Bearer ${getCookie("accessToken")}`,
-					"Content-Type": "multipart/form-data",
+					"Content-Type": "application/json",
 				},
 				withCredentials: true,
 			},

@@ -7,7 +7,7 @@ export default function ContentCard({ id, title, username, time, thumbnail }) {
 
 	const handleClick = () => {
 		if (id) {
-			navigate(`/video/${id}`);
+			navigate(`/videos/${id}`);
 		}
 	};
 

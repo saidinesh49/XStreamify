@@ -120,6 +120,7 @@ export default function VideoPlayer() {
 			try {
 				setIsLoading(true);
 				const videoResponse = await getVideoById(videoId);
+				console.log(videoResponse);
 				if (videoResponse?.data) {
 					setVideo(videoResponse.data);
 
@@ -230,7 +231,7 @@ export default function VideoPlayer() {
 	};
 
 	const copyVideoLink = () => {
-		const videoUrl = `${window.location.origin}/video/${videoId}`;
+		const videoUrl = `${window.location.origin}/videos/${videoId}`;
 		navigator.clipboard.writeText(videoUrl);
 		toast.success("Link copied to clipboard!");
 		setShowShareModal(false);
@@ -411,7 +412,7 @@ export default function VideoPlayer() {
 								<input
 									type="text"
 									readOnly
-									value={`${window.location.origin}/video/${videoId}`}
+									value={`${window.location.origin}/videos/${videoId}`}
 									className="flex-1 p-2 bg-surface-50 dark:bg-surface-700 rounded border border-surface-200 dark:border-surface-600"
 								/>
 								<button

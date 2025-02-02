@@ -48,14 +48,25 @@ const uploadVideo = async (videoData) => {
 		console.log("Video data: Before: ", videoData);
 
 		// Upload video to Cloudinary
-		const video = await uploadToCloudinary(videoData.videoFile, "video");
+		const video = await uploadToCloudinary(videoData.videoFile, "VIDEO");
 
-		console.log("After video upload: ", video);
+		console.log("After video upload to cloudinary: ", video);
+
+		if (!video?.secure_url) {
+			throw new Error("Failed to upload video to Cloudinary");
+		}
 
 		// Upload thumbnail to Cloudinary if provided
-		let thumbnail = "";
+		let thumbnailUrl = "";
 		if (videoData?.thumbnail) {
-			thumbnail = await uploadToCloudinary(videoData.thumbnail, "image");
+			const thumbnail = await uploadToCloudinary(
+				videoData.thumbnail,
+				"THUMBNAIL",
+			);
+			if (!thumbnail?.secure_url) {
+				throw new Error("Failed to upload thumbnail to Cloudinary");
+			}
+			thumbnailUrl = thumbnail?.secure_url;
 		}
 
 		// Send video details to backend
@@ -67,11 +78,12 @@ const uploadVideo = async (videoData) => {
 				description: videoData.description,
 				videoUrl: video?.secure_url,
 				duration: video?.duration,
-				thumbnailUrl: thumbnail?.secure_url || "",
+				thumbnailUrl: thumbnailUrl || "",
 			},
 			{
 				headers: {
 					Authorization: `Bearer ${accessToken}`,
+					"Content-Type": "application/json",
 				},
 				withCredentials: true,
 			},
@@ -113,19 +125,34 @@ const getVideoById = async (videoId) => {
 };
 
 // Update a video
-const updateVideo = async (videoId, { title, description, thumbnail }) => {
+const updateVideo = async (videoId, { title, description, thumbnail = "" }) => {
 	try {
 		const accessToken = getCookie("accessToken");
 		if (!accessToken) {
 			console.log("No access token found");
 			return null;
 		}
+		let thumbnailUrl = "";
+		if (thumbnail) {
+			const newThumbnailResponse = await uploadToCloudinary(
+				thumbnail,
+				"THUMBNAIL",
+			);
+			console.log("newthumbnail response: ", newThumbnailResponse);
+			if (!newThumbnailResponse?.secure_url) {
+				throw new Error("Failed to upload new thumbnail to Cloudinary");
+			}
+			thumbnailUrl = newThumbnailResponse?.secure_url;
+		}
 
 		const response = await axios.patch(
 			`${conf.BACKEND_URL}/videos/${videoId}`,
-			{ title, description, thumbnail },
+			{ title, description, thumbnailUrl: thumbnailUrl || "" },
 			{
-				headers: { Authorization: `Bearer ${accessToken}` },
+				headers: {
+					Authorization: `Bearer ${accessToken}`,
+					"Content-Type": "application/json",
+				},
 				withCredentials: true,
 			},
 		);
