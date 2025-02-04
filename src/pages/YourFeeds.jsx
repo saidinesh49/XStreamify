@@ -7,8 +7,12 @@ import {
 import Loading from "../utils/Loading";
 import { toast } from "react-toastify";
 import { X } from "lucide-react";
+import { useUserContext } from "../context/UserContext";
+import { useNavigate } from "react-router-dom";
 
 export default function YourFeeds() {
+	const { userData } = useUserContext();
+	const navigate = useNavigate();
 	const [includeTags, setIncludeTags] = useState([]);
 	const [excludeTags, setExcludeTags] = useState([]);
 	const [includeTagInput, setIncludeTagInput] = useState("");
@@ -16,6 +20,9 @@ export default function YourFeeds() {
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
+		if (!userData?.username) {
+			return navigate("/login");
+		}
 		const fetchTags = async () => {
 			try {
 				const response = await getUserTags("include");
