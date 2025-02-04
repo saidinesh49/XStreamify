@@ -40,6 +40,7 @@ import {
 	defaultLayoutIcons,
 	DefaultVideoLayout,
 } from "@vidstack/react/player/layouts/default";
+import { addTagsFromInteraction } from "../services/recommendationService";
 
 export default function VideoPlayer() {
 	const { videoId } = useParams();
@@ -76,6 +77,11 @@ export default function VideoPlayer() {
 				setTotalComments((prev) => prev + 1);
 				setNewComment("");
 				toast.success("Comment added successfully");
+
+				// Add tags from interaction
+				if (video.tags && video.tags.length > 0) {
+					await addTagsFromInteraction(video.tags);
+				}
 			}
 		} catch (error) {
 			toast.error("Failed to add comment");
@@ -220,6 +226,11 @@ export default function VideoPlayer() {
 			setIsLiked(!isLiked);
 			setLikesCount((prev) => (isLiked ? prev - 1 : prev + 1));
 			toast.success(isLiked ? "Like removed" : "Video liked");
+
+			// Add tags from interaction
+			if (!isLiked && video.tags && video.tags.length > 0) {
+				await addTagsFromInteraction(video.tags);
+			}
 		} catch (error) {
 			toast.error("Failed to update like");
 			console.error("Like error:", error);
@@ -457,6 +468,18 @@ export default function VideoPlayer() {
 					<p className="text-surface-700 dark:text-surface-300 whitespace-pre-line">
 						{video?.description}
 					</p>
+					{video.tags && video.tags.length > 0 && (
+						<div className="mt-4 flex flex-wrap gap-2">
+							{video.tags.map((tag) => (
+								<span
+									key={tag}
+									className="inline-flex items-center gap-1 px-3 py-1 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 rounded-full text-sm"
+								>
+									#{tag}
+								</span>
+							))}
+						</div>
+					)}
 				</div>
 
 				{/* Comments Section */}

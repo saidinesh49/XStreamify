@@ -4,7 +4,7 @@ import { useUserContext } from "../context/UserContext";
 import { uploadVideo } from "../services/videoService";
 import Loading from "../utils/Loading";
 import { toast } from "react-toastify";
-import { Upload, FileVideo, Image } from "lucide-react";
+import { Upload, FileVideo, Image, X } from "lucide-react";
 
 export function VideoUploadForm() {
 	const [title, setTitle] = useState("");
@@ -14,6 +14,8 @@ export function VideoUploadForm() {
 	const [isLoading, setLoading] = useState(false);
 	const [error, setError] = useState(null);
 	const [uploadProgress, setUploadProgress] = useState(0);
+	const [tagInput, setTagInput] = useState("");
+	const [tags, setTags] = useState([]);
 	const { userData } = useUserContext();
 	const navigate = useNavigate();
 	useEffect(() => {
@@ -48,6 +50,25 @@ export function VideoUploadForm() {
 		return true;
 	};
 
+	const handleTagInput = (e) => {
+		if (e.key === "Enter" && tagInput.trim()) {
+			e.preventDefault();
+			addTag();
+		}
+	};
+
+	const addTag = () => {
+		const newTag = tagInput.trim().toLowerCase();
+		if (newTag && !tags.includes(newTag)) {
+			setTags([...tags, newTag]);
+			setTagInput("");
+		}
+	};
+
+	const removeTag = (tagToRemove) => {
+		setTags(tags.filter((tag) => tag !== tagToRemove));
+	};
+
 	const handleVideoUpload = async (e) => {
 		e.preventDefault();
 		if (!validateForm()) return;
@@ -63,6 +84,7 @@ export function VideoUploadForm() {
 				description: description.trim(),
 				videoFile,
 				thumbnail,
+				tags, // Add tags to upload data
 			};
 
 			const response = await uploadVideo(videoData);
@@ -200,6 +222,52 @@ export function VideoUploadForm() {
 									Thumbnail is required for better video preview
 								</p>
 							)}
+						</div>
+					</div>
+
+					{/* Tags Input Section */}
+					<div className="space-y-4">
+						<div>
+							<label className="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
+								Tags
+							</label>
+							<div className="flex flex-wrap gap-2 p-2 border border-surface-200 dark:border-surface-600 rounded-lg min-h-[2.5rem]">
+								{tags.map((tag) => (
+									<span
+										key={tag}
+										className="inline-flex items-center gap-1 px-3 py-1 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 rounded-full text-sm"
+									>
+										#{tag}
+										<button
+											type="button"
+											onClick={() => removeTag(tag)}
+											className="hover:text-red-500 transition-colors"
+										>
+											<X className="w-4 h-4" />
+										</button>
+									</span>
+								))}
+								<div className="flex-1">
+									<input
+										type="text"
+										value={tagInput}
+										onChange={(e) => setTagInput(e.target.value)}
+										onKeyDown={handleTagInput}
+										placeholder="Add tags (press Enter)"
+										className="w-full bg-transparent border-none focus:ring-0 text-surface-800 dark:text-white placeholder-surface-400 outline-none"
+									/>
+								</div>
+							</div>
+							<div className="flex items-center gap-2 mt-2">
+								<button
+									type="button"
+									onClick={addTag}
+									disabled={!tagInput.trim()}
+									className="px-3 py-1 text-sm bg-primary-600 text-white rounded-full hover:bg-primary-700 disabled:opacity-50 transition-colors"
+								>
+									Add Tag
+								</button>
+							</div>
 						</div>
 					</div>
 
