@@ -82,6 +82,7 @@ const uploadVideo = async (videoData) => {
 				videoUrl: video?.secure_url,
 				duration: video?.duration,
 				thumbnailUrl: thumbnailUrl,
+				tags: videoData.tags, // Add tags to payload
 			},
 			{
 				headers: {

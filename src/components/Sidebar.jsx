@@ -14,7 +14,7 @@ const menuItems = [
 	{ icon: Home, label: "Home", path: "/" },
 	{ icon: PlaySquare, label: "Videos", path: "/videos" },
 	{ icon: MessageSquare, label: "Tweets", path: "/tweets" },
-	{ icon: Heart, label: "Your Feeds", path: "/feed" },
+	{ icon: Heart, label: "Your Feeds", path: "/your-feeds" },
 	{ icon: Users, label: "Following", path: "/following" },
 	{ icon: Trophy, label: "Achievements", path: "/achievements" },
 	{ icon: Settings, label: "Settings", path: "/settings" },

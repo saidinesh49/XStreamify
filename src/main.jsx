@@ -24,6 +24,7 @@ import Followings from "./pages/followings.jsx";
 import TweetDetails from "./pages/TweetDetails.jsx";
 import YourVideos from "./pages/YourVideos.jsx";
 import EditVideo from "./pages/EditVideo";
+import YourFeeds from "./pages/YourFeeds";
 
 const router = createBrowserRouter([
 	{
@@ -69,11 +70,6 @@ const router = createBrowserRouter([
 			},
 
 			{
-				path: "/feed",
-				element: <ComingSoon />, // TODO
-			},
-
-			{
 				path: "/achievements",
 				element: <ComingSoon />, // TODO
 			},
@@ -105,6 +101,10 @@ const router = createBrowserRouter([
 			{
 				path: "/videos/:videoId/edit",
 				element: <EditVideo />,
+			},
+			{
+				path: "/your-feeds",
+				element: <YourFeeds />,
 			},
 			{
 				path: "/*",

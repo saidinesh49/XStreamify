@@ -88,7 +88,10 @@ export default function TweetCard({
 							className="flex items-center gap-2 text-surface-500 hover:text-primary-500 transition-colors"
 							onClick={(e) => e.stopPropagation()}
 						>
-							<MessageCircle className="w-4 h-4" />
+							<MessageCircle
+								className="w-4 h-4"
+								onClick={hideNavigation ? undefined : onClick}
+							/>
 							<span className="text-sm">{tweet.commentsCount || 0}</span>
 						</button>
 						<button
