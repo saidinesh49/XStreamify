@@ -1,19 +1,19 @@
 import React, { useState, useEffect, useRef } from "react";
 import {
-	Search,
 	Bell,
 	Menu,
 	Video as VideoIcon,
 	User as UserIcon,
 	Settings,
 	LogOut,
+	Search,
 } from "lucide-react";
 import ThemeToggle from "./ThemeToggle";
 import ProfileDropdown from "./ProfileDropdown";
 import { useUserContext } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
 import { FaUser } from "react-icons/fa";
-import { PageNotFound } from "../utils/PageNotFound";
+import SearchBar from "./SearchBar";
 
 export default function Header({ onMenuClick }) {
 	const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -92,22 +92,11 @@ export default function Header({ onMenuClick }) {
 			</div>
 
 			<div className="flex-1 max-w-2xl mx-2 sm:mx-4">
-				<div className="relative group">
-					<input
-						type="text"
-						placeholder="Search..."
-						className="w-full px-4 py-2 pl-10 bg-surface-50 dark:bg-surface-800 rounded-full border border-surface-200 dark:border-surface-700 focus:outline-none focus:border-primary-300 dark:focus:border-primary-500 focus:ring-2 focus:ring-primary-100 dark:focus:ring-primary-500/20 transition-all duration-300 group-hover:bg-surface-100 dark:group-hover:bg-surface-700"
-					/>
-					<Search className="absolute left-3 top-2.5 w-5 h-5 text-surface-400 dark:text-surface-500 transition-colors duration-300 group-hover:text-primary-500" />
-				</div>
+				<SearchBar />
 			</div>
 
 			<div className="flex items-center gap-3">
 				<ThemeToggle />
-				<button className="p-2 hover:bg-surface-100 dark:hover:bg-surface-800 rounded-full relative transition-all duration-300 hover:rotate-12">
-					<Bell className="w-6 h-6 text-surface-600 dark:text-surface-300" />
-					<span className="absolute top-1 right-1 w-2 h-2 bg-primary-500 rounded-full animate-pulse"></span>
-				</button>
 				<div ref={profileRef}>
 					{userData?.username ? (
 						<button

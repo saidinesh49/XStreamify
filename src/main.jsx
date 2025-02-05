@@ -25,6 +25,7 @@ import TweetDetails from "./pages/TweetDetails.jsx";
 import YourVideos from "./pages/YourVideos.jsx";
 import EditVideo from "./pages/EditVideo";
 import YourFeeds from "./pages/YourFeeds";
+import SearchResults from "./pages/SearchResults";
 
 const router = createBrowserRouter([
 	{
@@ -105,6 +106,10 @@ const router = createBrowserRouter([
 			{
 				path: "/your-feeds",
 				element: <YourFeeds />,
+			},
+			{
+				path: "/search",
+				element: <SearchResults />,
 			},
 			{
 				path: "/*",
