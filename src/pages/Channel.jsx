@@ -9,8 +9,9 @@ import {
 	getUserFollowings,
 	getUserChannelFollowers,
 } from "../services/channelService";
-import { getAllVideos } from "../services/videoService"; // Correct import
+import { getAllVideos } from "../services/videoService";
 import VideoCard from "../components/VideoCard";
+import ChannelPlaylists from "../components/ChannelPlaylists";
 import { deleteVideo } from "../services/videoService";
 import { toast } from "react-toastify";
 
@@ -32,6 +33,7 @@ export function Channel() {
 	const [showFollowers, setShowFollowers] = useState(false);
 	const [isFollowingsLoading, setFollowingsLoading] = useState(true);
 	const [isFollowersLoading, setFollowersLoading] = useState(true);
+	const [activeTab, setActiveTab] = useState("videos");
 
 	const channelProfileDetails = async () => {
 		setLoading(true);
@@ -207,6 +209,38 @@ export function Channel() {
 							)}
 						</div>
 
+						{/* Tabs Section */}
+						<div className="mt-8 border-b border-gray-200 dark:border-gray-700">
+							<div className="flex gap-8">
+								<button
+									onClick={() => setActiveTab("videos")}
+									className={`pb-4 text-sm font-medium transition-colors relative ${
+										activeTab === "videos"
+											? "text-surface-900 dark:text-white"
+											: "text-surface-500 hover:text-surface-700 dark:hover:text-surface-300"
+									}`}
+								>
+									Videos
+									{activeTab === "videos" && (
+										<div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary-600"></div>
+									)}
+								</button>
+								<button
+									onClick={() => setActiveTab("playlists")}
+									className={`pb-4 text-sm font-medium transition-colors relative ${
+										activeTab === "playlists"
+											? "text-surface-900 dark:text-white"
+											: "text-surface-500 hover:text-surface-700 dark:hover:text-surface-300"
+									}`}
+								>
+									Playlists
+									{activeTab === "playlists" && (
+										<div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary-600"></div>
+									)}
+								</button>
+							</div>
+						</div>
+
 						{/* Followings Modal */}
 						{showFollowings && (
 							<div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
@@ -262,7 +296,7 @@ export function Channel() {
 								</div>
 							</div>
 						)}
-						{/*Show Follwers Modal*/}
+						{/*Show Followers Modal*/}
 						{showFollowers && (
 							<div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
 								<div className="bg-white dark:bg-surface-800 rounded-lg w-full max-w-md mx-4">
@@ -291,7 +325,7 @@ export function Channel() {
 													className="flex items-center gap-3 p-2 hover:bg-gray-50 dark:hover:bg-surface-700 rounded-lg cursor-pointer"
 													onClick={() => {
 														navigate(`/c/${follower.username}`);
-														setShowFollower(false);
+														setShowFollowers(false);
 													}}
 												>
 													<img
@@ -318,9 +352,16 @@ export function Channel() {
 							</div>
 						)}
 					</div>
-					{/* Add Videos Section */}
-					{channelData && (
+
+					{/* Content Section */}
+					{channelData && activeTab === "videos" && (
 						<ChannelVideos
+							userId={channelData._id}
+							isOwnProfile={userData?.username === channelData.username}
+						/>
+					)}
+					{channelData && activeTab === "playlists" && (
+						<ChannelPlaylists
 							userId={channelData._id}
 							isOwnProfile={userData?.username === channelData.username}
 						/>

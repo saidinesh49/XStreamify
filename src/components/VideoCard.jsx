@@ -3,7 +3,7 @@ import { Play, MoreVertical, Edit, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
 
-export default function VideoCard({ video, isOwner, onDelete, onEdit }) {
+export default function VideoCard({ video, isOwner, onDelete, onEdit, playlistId }) {
 	const [showOptions, setShowOptions] = useState(false);
 	const [showDeleteModal, setShowDeleteModal] = useState(false);
 	const navigate = useNavigate();
@@ -27,13 +27,20 @@ export default function VideoCard({ video, isOwner, onDelete, onEdit }) {
 		setShowOptions(false);
 	};
 
+	const handleVideoClick = () => {
+		const url = playlistId 
+			? `/videos/${video._id}?playlist=${playlistId}`
+			: `/videos/${video._id}`;
+		navigate(url);
+	};
+
 	return (
 		<>
 			<div className="group relative bg-white dark:bg-surface-800 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-300">
 				{/* Video Thumbnail Section */}
 				<div
 					className="relative aspect-video cursor-pointer"
-					onClick={() => navigate(`/videos/${video._id}`)}
+					onClick={handleVideoClick}
 				>
 					{/* Thumbnail */}
 					<img
