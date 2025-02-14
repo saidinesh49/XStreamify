@@ -26,6 +26,9 @@ import YourVideos from "./pages/YourVideos.jsx";
 import EditVideo from "./pages/EditVideo";
 import YourFeeds from "./pages/YourFeeds";
 import SearchResults from "./pages/SearchResults";
+import CreatePlaylist from "./pages/CreatePlaylist";
+import Playlist from "./pages/Playlist";
+import EditPlaylist from "./pages/EditPlaylist";
 
 const router = createBrowserRouter([
 	{
@@ -110,6 +113,18 @@ const router = createBrowserRouter([
 			{
 				path: "/search",
 				element: <SearchResults />,
+			},
+			{
+				path: "/create-playlist",
+				element: <CreatePlaylist />,
+			},
+			{
+				path: "/playlist/:playlistId",
+				element: <Playlist />,
+			},
+			{
+				path: "/playlist/:playlistId/edit",
+				element: <EditPlaylist />,
 			},
 			{
 				path: "/*",
