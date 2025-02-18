@@ -8,9 +8,16 @@ const googleLogin = async (email = "", addUserData) => {
 			throw new Error("email not received at googleLogin.");
 		}
 
-		const response = await axios.post(`${conf.BACKEND_URL}/users/gauth/login`, {
-			email,
-		});
+		const response = await axios.post(
+			`${conf.BACKEND_URL}/users/gauth/login`,
+			{
+				email,
+			},
+			{
+				withCredentials: true,
+				headers: { "Content-Type": "application/json" },
+			},
+		);
 
 		const Data = response.data?.data;
 		// console.log("Response from backend:", Data);
