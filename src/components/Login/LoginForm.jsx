@@ -28,7 +28,9 @@ export function LoginForm() {
 		try {
 			const result = await signInWithPopup(auth, googleProvider);
 			// const token = await result?.user?.getIdToken();
+			const token = await result?.user?.getIdToken();
 			const response = await googleLogin(
+				token,
 				result?._tokenResponse?.email,
 				addUserData,
 			);

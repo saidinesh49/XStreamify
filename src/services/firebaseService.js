@@ -2,13 +2,14 @@ import axios from "axios";
 import conf from "../conf/conf";
 import { getCookie, setCookie } from "./authService";
 
-const googleLogin = async (email = "", addUserData) => {
+const googleLogin = async (idToken = "", email = "", addUserData) => {
 	try {
 		if (!email) {
 			throw new Error("email not received at googleLogin.");
 		}
 
 		const response = await axios.post(`${conf.BACKEND_URL}/users/gauth/login`, {
+			idToken,
 			email,
 		});
 
