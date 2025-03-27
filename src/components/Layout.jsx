@@ -1,5 +1,5 @@
 return (
-    <div className="min-h-screen bg-gradient-dark text-surface-900 dark:text-white">
+    <div className="min-h-screen bg-surface-50 dark:bg-surface-900 text-surface-900 dark:text-white">
         {/* Header */}
         <header className="fixed top-0 left-0 right-0 h-16 bg-surface-800/95 backdrop-blur-sm border-b border-surface-700 z-50">
             <div className="container mx-auto h-full px-4 flex items-center justify-between">
