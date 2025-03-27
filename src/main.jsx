@@ -154,7 +154,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
 				style={{
 					"--toastify-color-light": "#18181B",
 					"--toastify-color-dark": "#18181B",
-					"--toastify-color-info": "#3B82F6",
+					"--toastify-color-info": "#F59E0B",
 					"--toastify-color-success": "#22C55E",
 					"--toastify-color-warning": "#F59E0B",
 					"--toastify-color-error": "#EF4444",

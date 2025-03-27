@@ -1,12 +1,32 @@
-<<<<<<< HEAD
-# React + Vite
+# XStreamify
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+> Experience content differently - Where streaming meets social, powered by AI recommendations
 
-Currently, two official plugins are available:
+A modern video platform combining the best of content streaming and social engagement, enhanced with personalized recommendations.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-=======
-# StreamVerse_Frontend
->>>>>>> 8d1e49db7ba866a19aee9bd178198829696bb46c
+## Core Features
+
+- Smart content discovery through AI-powered recommendations
+- Seamless video streaming with playlist support
+- Social engagement with comments and real-time interactions
+- Dark mode optimized interface
+
+## Quick Setup
+
+```bash
+npm install
+npm run dev
+```
+
+## Tech Stack
+
+- React + Vite
+- TailwindCSS
+- Vidstack Player
+
+## Design
+
+Built with a sleek black theme and smooth animations, optimized for both desktop and mobile viewing.
+
+---
+Made with ❤️ by [saidinesh49](https://github.com/saidinesh49)

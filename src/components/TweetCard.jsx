@@ -18,8 +18,8 @@ export default function TweetCard({
 			onClick={hideNavigation ? undefined : onClick}
 			className={`bg-white dark:bg-surface-800 rounded-xl p-4 shadow-sm ${
 				!hideNavigation &&
-				"cursor-pointer hover:bg-blue-50 dark:hover:bg-surface-700/50"
-			} transition-colors`}
+				"cursor-pointer hover:bg-surface-50/10 dark:hover:bg-surface-700/50 transition-all duration-200"
+			}`}
 		>
 			<div className="flex items-start gap-3">
 				<img

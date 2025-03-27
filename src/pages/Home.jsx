@@ -45,7 +45,7 @@ export default function Home() {
 	return (
 		<div className="pt-20 px-4">
 			<div className="max-w-7xl mx-auto">
-				<h1 className="text-2xl font-bold text-surface-800 dark:text-white mb-6">
+				<h1 className="text-2xl font-bold bg-gradient-to-r from-surface-800 dark:from-premium-400 dark:to-premium-600 bg-clip-text text-transparent mb-6">
 					Recommended Videos
 				</h1>
 				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
@@ -56,7 +56,7 @@ export default function Home() {
 				{videos.length === 0 && (
 					<div className="text-center py-12">
 						<p className="text-surface-500 dark:text-surface-400">
-							No videos found for your tags
+							No videos found to recommend
 						</p>
 					</div>
 				)}

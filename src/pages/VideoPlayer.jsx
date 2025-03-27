@@ -310,11 +310,11 @@ export default function VideoPlayer() {
 	const currentIndex = playlistVideos.findIndex(v => v._id === videoId);
 
 	return (
-		<div className="pt-16">
+		<div className="pt-16 bg-gradient-to-b from-surface-50 to-surface-100 dark:from-surface-900 dark:to-surface-950 min-h-screen">
 			<div className="flex flex-col md:flex-row">
 				{/* Main Video Section */}
 				<div className="flex-1">
-					<div className="relative aspect-video bg-black">
+					<div className="relative aspect-video bg-surface-100 dark:bg-black border border-surface-200 dark:border-surface-800">
 						<MediaPlayer 
 							ref={playerRef}
 							title={video?.title} 
@@ -331,7 +331,7 @@ export default function VideoPlayer() {
 					</div>
 
 					{/* Video Info */}
-					<div className="p-4">
+					<div className="p-4 bg-white/95 dark:bg-surface-800/95 backdrop-blur-sm">
 						<h1 className="text-xl font-bold text-surface-800 dark:text-white mb-2">
 							{video.title}
 						</h1>
@@ -368,8 +368,8 @@ export default function VideoPlayer() {
 										onClick={handleSubscribe}
 										className={`px-6 py-2 rounded-full font-medium transition-all ${
 											isSubscribed
-												? "bg-surface-200 dark:bg-surface-700"
-												: "bg-primary-600 text-white hover:bg-primary-700"
+												? "bg-surface-100 dark:bg-surface-700 text-surface-800 dark:text-surface-200"
+												: "bg-gradient-to-r from-premium-500 to-premium-600 text-black hover:from-premium-600 hover:to-premium-700"
 										}`}
 									>
 										{isSubscribed ? "Subscribed" : "Subscribe"}
@@ -383,19 +383,17 @@ export default function VideoPlayer() {
 									onClick={handleLike}
 									className={`flex items-center gap-2 px-4 py-2 rounded-full ${
 										isLiked
-											? "bg-primary-100/10 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400"
-											: "hover:bg-surface-100 dark:hover:bg-surface-800"
+											? "bg-premium-500/20 text-premium-500"
+											: "hover:bg-surface-100 dark:hover:bg-surface-800 text-surface-700 dark:text-surface-300"
 									}`}
 								>
-									<ThumbsUp
-										className={`w-5 h-5 ${isLiked ? "fill-current" : ""}`}
-									/>
+									<ThumbsUp className={`w-5 h-5 ${isLiked ? "fill-premium-500" : ""}`} />
 									<span>{likesCount}</span>
 								</button>
 
 								<button
 									onClick={handleShare}
-									className="flex items-center gap-2 px-4 py-2 rounded-full hover:bg-surface-100 dark:hover:bg-surface-800"
+									className="flex items-center gap-2 px-4 py-2 rounded-full hover:bg-surface-100 dark:hover:bg-surface-800 text-surface-700 dark:text-surface-300"
 								>
 									<Share2 className="w-5 h-5" />
 									<span>Share</span>
@@ -403,7 +401,7 @@ export default function VideoPlayer() {
 
 								<button
 									onClick={() => setShowSponsorModal(true)}
-									className="flex items-center gap-2 px-4 py-2 rounded-full hover:bg-surface-100 dark:hover:bg-surface-800"
+									className="flex items-center gap-2 px-4 py-2 rounded-full hover:bg-surface-100 dark:hover:bg-surface-800 text-surface-700 dark:text-surface-300"
 								>
 									<Heart className="w-5 h-5" />
 									<span>Sponsor</span>
@@ -425,7 +423,7 @@ export default function VideoPlayer() {
 										/>
 										<button
 											onClick={copyVideoLink}
-											className="px-4 py-2 bg-primary-600 text-white rounded hover:bg-primary-700"
+											className="px-4 py-2 bg-gradient-to-r from-premium-500 to-premium-600 text-black rounded hover:from-premium-600 hover:to-premium-700"
 										>
 											Copy
 										</button>
@@ -445,14 +443,14 @@ export default function VideoPlayer() {
 							<div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
 								<div className="bg-white dark:bg-surface-800 rounded-lg p-6 w-full max-w-md mx-4">
 									<div className="text-center">
-										<Heart className="w-12 h-12 text-primary-500 mx-auto mb-4" />
+										<Heart className="w-12 h-12 text-premium-500 mx-auto mb-4" />
 										<h3 className="text-xl font-semibold mb-2">Coming Soon!</h3>
 										<p className="text-surface-600 dark:text-surface-400 mb-4">
 											Channel sponsorship feature is under development. Stay tuned!
 										</p>
 										<button
 											onClick={() => setShowSponsorModal(false)}
-											className="w-full px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
+											className="w-full px-4 py-2 bg-gradient-to-r from-premium-500 to-premium-600 text-black rounded-lg hover:from-premium-600 hover:to-premium-700"
 										>
 											Got it
 										</button>
@@ -461,7 +459,7 @@ export default function VideoPlayer() {
 							</div>
 						)}
 
-						<div className="mt-6 p-4 bg-surface-200 dark:bg-surface-800 rounded-lg">
+						<div className="mt-6 p-4 bg-white/95 dark:bg-surface-800/95 backdrop-blur-sm rounded-lg border border-surface-200 dark:border-surface-700">
 							<p className="text-surface-700 dark:text-surface-300 whitespace-pre-line">
 								{video?.description}
 							</p>
@@ -470,7 +468,7 @@ export default function VideoPlayer() {
 									{video.tags.map((tag) => (
 										<span
 											key={tag}
-											className="inline-flex items-center gap-1 px-3 py-1 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 rounded-full text-sm"
+											className="inline-flex items-center gap-1 px-3 py-1 bg-premium-500/10 text-premium-500 rounded-full text-sm"
 										>
 											#{tag}
 										</span>
@@ -480,8 +478,8 @@ export default function VideoPlayer() {
 						</div>
 
 						{/* Comments Section */}
-						<div className="mt-6">
-							<h3 className="text-lg font-semibold mb-4">
+						<div className="mt-6 p-4 bg-white/95 dark:bg-surface-800/95 backdrop-blur-sm rounded-lg border border-surface-200 dark:border-surface-700">
+							<h3 className="text-lg font-semibold mb-4 text-surface-800 dark:text-white">
 								Comments ({totalComments})
 							</h3>
 
@@ -492,12 +490,12 @@ export default function VideoPlayer() {
 									value={newComment}
 									onChange={(e) => setNewComment(e.target.value)}
 									placeholder="Add a comment..."
-									className="flex-1 px-4 py-2 rounded-lg bg-surface-50 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 focus:ring-2 focus:ring-primary-500"
+									className="flex-1 px-4 py-2 rounded-lg bg-surface-50 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 focus:ring-2 focus:ring-premium-500 text-surface-800 dark:text-white"
 								/>
 								<button
 									type="submit"
 									disabled={!newComment.trim()}
-									className="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50"
+									className="px-6 py-2 bg-gradient-to-r from-premium-500 to-premium-600 text-black rounded-lg hover:from-premium-600 hover:to-premium-700 disabled:opacity-50"
 								>
 									<Send className="w-5 h-5" />
 								</button>
@@ -522,7 +520,7 @@ export default function VideoPlayer() {
 
 					{/* Mobile Playlist Drawer */}
 					{playlistId && playlistVideos.length > 0 && (
-						<div className="md:hidden fixed bottom-0 left-0 right-0 bg-surface-800/95 backdrop-blur-sm">
+						<div className="md:hidden fixed bottom-0 left-0 right-0 bg-white/95 dark:bg-surface-800/95 backdrop-blur-sm border-t border-surface-200 dark:border-surface-700">
 							<div 
 								className="p-4 flex items-center justify-between cursor-pointer"
 								onClick={() => setShowPlaylistDrawer(!showPlaylistDrawer)}
@@ -558,8 +556,8 @@ export default function VideoPlayer() {
 													className="w-full aspect-video object-cover rounded"
 												/>
 												{index === currentIndex + 1 && (
-													<div className="absolute inset-0 bg-primary-500/20 flex items-center justify-center">
-														<Play className="w-6 h-6 text-white" fill="white" />
+													<div className="absolute inset-0 bg-premium-500/20 flex items-center justify-center">
+														<Play className="w-6 h-6 text-white fill-white" />
 													</div>
 												)}
 											</div>
@@ -576,7 +574,7 @@ export default function VideoPlayer() {
 
 				{/* Desktop Playlist Sidebar */}
 				{playlistId && playlistVideos.length > 0 && (
-					<div className="hidden md:block w-80 bg-surface-800/95 backdrop-blur-sm border-l border-surface-700 overflow-y-auto h-[calc(100vh-4rem)] sticky top-16">
+					<div className="hidden md:block w-80 bg-white/95 dark:bg-surface-800/95 backdrop-blur-sm border-l border-premium-500/20 overflow-y-auto h-[calc(100vh-4rem)] sticky top-16">
 						<div className="p-4">
 							<h3 className="text-white font-medium mb-4">Playlist Videos</h3>
 							<div className="space-y-3">
@@ -595,8 +593,8 @@ export default function VideoPlayer() {
 												className="w-full aspect-video object-cover rounded"
 											/>
 											{index === currentIndex + 1 && (
-												<div className="absolute inset-0 bg-primary-500/20 flex items-center justify-center">
-													<Play className="w-6 h-6 text-white" fill="white" />
+												<div className="absolute inset-0 bg-premium-500/20 flex items-center justify-center">
+													<Play className="w-6 h-6 text-white fill-white" />
 												</div>
 											)}
 										</div>

@@ -196,7 +196,7 @@ export function Channel() {
                                         ${
 																					channelData?.isSubscribed
 																						? "bg-gray-100 text-gray-800 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-100"
-																						: "bg-blue-600 text-white hover:bg-blue-700"
+																						: "bg-gradient-to-r from-premium-500 to-premium-600 hover:from-premium-600 hover:to-premium-700 text-black font-medium transition-all duration-200"
 																				}
                                     `}
 								>

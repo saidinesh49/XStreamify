@@ -96,16 +96,13 @@ export function LoginForm() {
 	};
 
 	return (
-		<div className="flex items-center justify-center bg-gray-50 dark:bg-gray-900">
-			<div className="w-full max-w-md p-8 bg-white dark:bg-gray-800 rounded-lg shadow-md">
-				<h2 className="text-2xl font-bold text-center text-gray-800 dark:text-white">
-					Login
-				</h2>
-				<form onSubmit={handleSubmit} className="space-y-4 mt-6">
+		<div className="flex items-center justify-center bg-surface-50 dark:bg-surface-900">
+			<div className="w-full max-w-md p-8 bg-white dark:bg-surface-800 rounded-lg shadow-lg border border-surface-200 dark:border-surface-700">
+				<form onSubmit={handleSubmit} className="space-y-4">
 					<div>
 						<label
 							htmlFor="username"
-							className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+							className="block text-sm font-medium text-surface-700 dark:text-surface-300"
 						>
 							Username or Email
 						</label>
@@ -115,13 +112,13 @@ export function LoginForm() {
 							value={username}
 							onChange={(e) => setUsername(e.target.value)}
 							required
-							className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white dark:border-gray-600"
+							className="mt-1 block w-full px-4 py-2 bg-white dark:bg-surface-700 border border-surface-300 dark:border-surface-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-premium-500 text-surface-800 dark:text-white transition-all duration-200"
 						/>
 					</div>
 					<div>
 						<label
 							htmlFor="password"
-							className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+							className="block text-sm font-medium text-surface-700 dark:text-surface-300"
 						>
 							Password
 						</label>
@@ -131,17 +128,16 @@ export function LoginForm() {
 							value={password}
 							onChange={(e) => setPassword(e.target.value)}
 							required
-							className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white dark:border-gray-600"
+							className="mt-1 block w-full px-4 py-2 bg-white dark:bg-surface-700 border border-surface-300 dark:border-surface-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-premium-500 text-surface-800 dark:text-white transition-all duration-200"
 						/>
 					</div>
-					{error && <p className="text-red-500 text-sm">{error}</p>}{" "}
-					{/* Display error message */}
+					{error && <p className="text-red-500 text-sm">{error}</p>}
 					<button
 						type="submit"
-						className={`w-full py-2 px-4 mt-4 font-semibold rounded-md shadow-md focus:outline-none focus:ring-2 ${
+						className={`w-full py-2 px-4 rounded-lg font-medium transition-all duration-200 ${
 							isSubmitting
-								? "bg-gray-400 cursor-not-allowed"
-								: "bg-blue-600 hover:bg-blue-700 text-white"
+								? "bg-surface-400 cursor-not-allowed"
+								: "bg-gradient-to-r from-premium-500 to-premium-600 hover:from-premium-600 hover:to-premium-700 text-black"
 						}`}
 						disabled={isSubmitting}
 					>
@@ -150,17 +146,17 @@ export function LoginForm() {
 					<button
 						type="button"
 						onClick={handleGoogleLogin}
-						className="w-full py-2 px-4 flex items-center justify-center border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-700 text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+						className="w-full py-2 px-4 flex items-center justify-center border border-surface-300 dark:border-surface-600 rounded-lg shadow-sm bg-white dark:bg-surface-700 text-surface-700 dark:text-surface-300 hover:bg-surface-50 dark:hover:bg-surface-600 focus:outline-none focus:ring-2 focus:ring-premium-500 transition-all duration-200"
 					>
 						<FcGoogle className="mr-2" />
 						Sign in with Google
 					</button>
-					<div className="my-4">
+					<div className="mt-4">
 						<a
 							href="/register"
-							className="underline text-md font-semibold decoration-auto decoration-sky-800 hover:decoration-2 hover:decoration-sky-300"
+							className="text-sm font-medium text-surface-600 dark:text-surface-400 hover:text-premium-500 dark:hover:text-premium-400 transition-colors"
 						>
-							Don't have an account?
+							Don't have an account? Sign up
 						</a>
 					</div>
 				</form>
