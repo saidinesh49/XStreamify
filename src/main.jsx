@@ -29,6 +29,7 @@ import SearchResults from "./pages/SearchResults";
 import CreatePlaylist from "./pages/CreatePlaylist";
 import Playlist from "./pages/Playlist";
 import EditPlaylist from "./pages/EditPlaylist";
+import ManageChildren from "./pages/ManageChildren";
 
 const router = createBrowserRouter([
 	{
@@ -125,6 +126,10 @@ const router = createBrowserRouter([
 			{
 				path: "/playlist/:playlistId/edit",
 				element: <EditPlaylist />,
+			},
+			{
+				path: "/manage-children",
+				element: <ManageChildren />,
 			},
 			{
 				path: "/*",

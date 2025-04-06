@@ -52,7 +52,7 @@ const addCustomTag = async (tagData) => {
 
 		const response = await axios.post(
 			`${conf.BACKEND_URL}/feeds/tags/${tagData.type}`,
-			{ tag: tagData.tag },
+			{ tag: tagData.tag , relation: tagData.relation},
 			{
 				headers: { Authorization: `Bearer ${accessToken}` },
 				withCredentials: true,
@@ -78,7 +78,7 @@ const removeTag = async (tagData) => {
 			`${conf.BACKEND_URL}/feeds/tags/${tagData.type}`,
 			{
 				headers: { Authorization: `Bearer ${accessToken}` },
-				data: { tag: tagData.tag },
+				data: { tag: tagData.tag , relation: tagData.relation},
 				withCredentials: true,
 			},
 		);

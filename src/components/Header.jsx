@@ -10,16 +10,21 @@ import {
 } from "lucide-react";
 import ThemeToggle from "./ThemeToggle";
 import ProfileDropdown from "./ProfileDropdown";
+import NotificationsDropdown from "./NotificationsDropdown";
 import { useUserContext } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
 import { FaUser } from "react-icons/fa";
 import SearchBar from "./SearchBar";
+import { getNotificationCount } from "../services/notificationService";
 
 export default function Header({ onMenuClick }) {
 	const [isProfileOpen, setIsProfileOpen] = useState(false);
+	const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+	const [notificationCount, setNotificationCount] = useState(0);
 	const { userData } = useUserContext();
 	const navigate = useNavigate();
 	const profileRef = useRef(null);
+	const notificationsRef = useRef(null);
 
 	useEffect(() => {
 		const handleClickOutside = (event) => {
@@ -30,16 +35,43 @@ export default function Header({ onMenuClick }) {
 			) {
 				setIsProfileOpen(false);
 			}
+			if (
+				notificationsRef.current &&
+				!notificationsRef.current.contains(event.target) &&
+				isNotificationsOpen
+			) {
+				setIsNotificationsOpen(false);
+			}
 		};
 
-		if (isProfileOpen) {
+		if (isProfileOpen || isNotificationsOpen) {
 			document.addEventListener("mousedown", handleClickOutside);
 		}
 
 		return () => {
 			document.removeEventListener("mousedown", handleClickOutside);
 		};
-	}, [isProfileOpen]);
+	}, [isProfileOpen, isNotificationsOpen]);
+
+	useEffect(() => {
+		if (userData?._id) {
+			fetchNotificationCount();
+			// Periodically refresh notification count
+			const interval = setInterval(fetchNotificationCount, 60000); // every minute
+			return () => clearInterval(interval);
+		}
+	}, [userData]);
+
+	const fetchNotificationCount = async () => {
+		try {
+			const response = await getNotificationCount();
+			if (response?.data) {
+				setNotificationCount(response.data.count);
+			}
+		} catch (error) {
+			console.error("Error fetching notification count:", error);
+		}
+	};
 
 	const handleClickProfileIcon = () => {
 		try {
@@ -51,6 +83,14 @@ export default function Header({ onMenuClick }) {
 		} catch (error) {
 			console.log("Error: inside handleProfileIcon", error);
 		}
+	};
+
+	const handleClickNotificationIcon = () => {
+		if (!userData?.username) {
+			navigate("/login");
+			return;
+		}
+		setIsNotificationsOpen(!isNotificationsOpen);
 	};
 
 	const handleLogout = () => {
@@ -97,6 +137,27 @@ export default function Header({ onMenuClick }) {
 
 			<div className="flex items-center gap-3">
 				<ThemeToggle />
+				
+				{/* Notification Bell */}
+				<div ref={notificationsRef} className="relative">
+					<button
+						onClick={handleClickNotificationIcon}
+						className="p-2 hover:bg-surface-100 dark:hover:bg-surface-800 rounded-full transition-colors relative"
+					>
+						<Bell className="w-6 h-6 text-surface-600 dark:text-surface-300" />
+						{notificationCount > 0 && (
+							<span className="absolute top-0 right-0 bg-premium-500 text-black text-xs font-medium rounded-full min-w-[1.25rem] h-5 flex items-center justify-center">
+								{notificationCount > 9 ? "9+" : notificationCount}
+							</span>
+						)}
+					</button>
+					<NotificationsDropdown 
+						isOpen={isNotificationsOpen} 
+						onClose={() => setIsNotificationsOpen(false)} 
+						refreshCount={fetchNotificationCount}
+					/>
+				</div>
+				
 				<div ref={profileRef}>
 					{userData?.username ? (
 						<button
