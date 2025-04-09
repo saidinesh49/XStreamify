@@ -97,6 +97,10 @@ export default function ManageChildren() {
                         setError("Some users are not shown because they already have parent accounts.");
                         return false;
                     }
+                    if(children.some(child => child.user._id === user._id)) {
+                        // this user is already ur child
+                        return false;
+                    }
                     return true;
                 });
                 setSuggestions(filteredSuggestions);
@@ -410,14 +414,14 @@ export default function ManageChildren() {
                                         <div className="space-y-8">
                                             {/* View child's included tags (read-only) */}
                                             <div>
-                                                <div className="flex items-center gap-2 mb-3">
-                                                    <h3 className="text-lg font-medium text-surface-800 dark:text-white">
+                                                <div className="flex items-center gap-2 mb-2">
+                                                    <h3 className="text-md font-medium text-surface-800 dark:text-white">
                                                         Favorite recommendations
                                                     </h3>
-                                                    <Eye className="w-4 h-4 text-premium-500" />
-                                                    <span className="text-xs bg-premium-500/10 text-premium-500 px-2 py-0.5 rounded-full">
-                                                        View only
-                                                    </span>
+                                                </div>
+                                                <div className="flex items-center gap-1 text-sm text-premium-500 bg-premium-500/10 px-2 py-0.5 rounded-full mb-2">
+                                                    <Eye className="w-3.5 h-3.5" />
+                                                    <span>View only</span>
                                                 </div>
                                                 <div className="flex flex-wrap gap-2 p-4 bg-surface-50 dark:bg-surface-700/50 rounded-lg min-h-[4rem]">
                                                     {selectedChildTags.includeTags.length > 0 ? (
@@ -439,27 +443,26 @@ export default function ManageChildren() {
                                             
                                             {/* Manage child's excluded tags (editable) */}
                                             <div>
-                                                <div className="flex items-center gap-2 mb-3">
-                                                    <h3 className="text-lg font-medium text-surface-800 dark:text-white">
+                                                <div className="flex items-center gap-2 mb-2">
+                                                    <h3 className="text-md font-medium text-surface-800 dark:text-white">
                                                         Content to exclude
                                                     </h3>
-                                                    <Edit className="w-4 h-4 text-premium-500" />
-                                                    <span className="text-xs bg-premium-500/10 text-premium-500 px-2 py-0.5 rounded-full">
-                                                        You control
-                                                    </span>
                                                 </div>
-                                                <div className="p-4 border border-red-200 dark:border-red-800/30 rounded-lg bg-red-50/50 dark:bg-red-900/10">
-                                                    <div className="flex flex-wrap gap-2 min-h-[4rem] mb-4">
+                                                <div className="flex items-center gap-1 text-sm text-premium-500 bg-premium-500/10 px-2 py-0.5 rounded-full mb-2">
+                                                    <Edit className="w-3.5 h-3.5" />
+                                                    <span>You control</span>
+                                                </div>
+                                                <div className="flex flex-wrap gap-2 p-2 border border-red-200 dark:border-red-600 rounded-lg min-h-[2.5rem]">
                                                         {selectedChildTags.excludeTags.map((tag) => (
                                                             <span
                                                                 key={tag}
-                                                                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 rounded-full text-sm group"
+                                                                className="inline-flex items-center gap-1 px-3 py-1 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 rounded-full text-sm"
                                                             >
                                                                 #{tag}
                                                                 <button
                                                                     type="button"
                                                                     onClick={() => handleRemoveExcludedTag(tag)}
-                                                                    className="hover:bg-red-200 dark:hover:bg-red-800/30 p-0.5 rounded-full transition-colors"
+                                                                    className="hover:text-red-500 transition-colors"
                                                                 >
                                                                     <X className="w-3.5 h-3.5" />
                                                                 </button>
@@ -471,23 +474,21 @@ export default function ManageChildren() {
                                                             onChange={(e) => setExcludeTagInput(e.target.value)}
                                                             onKeyDown={(e) => e.key === "Enter" && handleAddExcludedTag()}
                                                             placeholder="Type a tag to exclude and press Enter"
-                                                            className="flex-1 min-w-[200px] bg-transparent border-none focus:ring-0 text-red-700 dark:text-red-400 placeholder-red-400/60 dark:placeholder-red-500/40 outline-none"
+                                                            className="w-full bg-transparent border-none focus:ring-0 text-surface-800 dark:text-white placeholder-surface-400 outline-none"
                                                         />
-                                                    </div>
-                                                    <div className="flex items-center gap-3">
-                                                        <button
-                                                            type="button"
-                                                            onClick={(e)=>{handleAddExcludedTag(e)}}
-                                                            disabled={!excludeTagInput.trim()}
-                                                            className="px-4 py-2 text-sm bg-red-600 text-white rounded-full hover:bg-red-700 disabled:opacity-50 transition-colors flex items-center gap-2"
-                                                        >
-                                                            <Plus className="w-4 h-4" />
-                                                            Add Tag
-                                                        </button>
-                                                        <p className="text-sm text-red-600/80 dark:text-red-400/80">
-                                                            Content with these tags won't appear in {selectedChild.fullName}'s feed
-                                                        </p>
-                                                    </div>
+                                                </div>
+                                                <div className="flex items-center gap-3 mt-2">
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => handleAddExcludedTag()}
+                                                        disabled={!excludeTagInput.trim()}
+                                                        className="px-4 py-1.5 text-sm bg-red-600 text-white rounded-full hover:bg-red-700 disabled:opacity-50 transition-colors"
+                                                    >
+                                                        Add Tag
+                                                    </button>
+                                                    <p className="text-sm text-red-600/80 dark:text-red-400/80">
+                                                        Content with these tags won't appear in {selectedChild.fullName}'s feed
+                                                    </p>
                                                 </div>
                                             </div>
                                         </div>
