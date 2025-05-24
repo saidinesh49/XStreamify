@@ -5,14 +5,17 @@ import { useUserContext } from "../../context/UserContext";
 import { toast } from "react-toastify";
 import { signInWithPopup } from "firebase/auth";
 import { auth, googleProvider } from "../../services/firebase";
-import { googleLogin } from "../../services/firebaseService";
+import { googleLogin, googleSignUp } from "../../services/firebaseService";
 import { FcGoogle } from "react-icons/fc"; // Import Google icon
+import {PasswordPopup} from "../PasswordPopUp"; // Import the PasswordPopup component
 
 export function LoginForm() {
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
 	const [error, setError] = useState(null);
 	const navigate = useNavigate();
+	const [showPasswordPopup, setShowPasswordPopup] = useState(false);
+	const [googleTokenResponse, setGoogleTokenResponse] = useState(null);
 	const { userData, addUserData } = useUserContext(); // Get addUserData from context
 
 	const [isSubmitting, setIsSubmitting] = useState(false);
@@ -28,6 +31,7 @@ export function LoginForm() {
 		try {
 			const result = await signInWithPopup(auth, googleProvider);
 			// const token = await result?.user?.getIdToken();
+			console.log("google credentials:",result);
 			const token = await result?.user?.getIdToken();
 			const response = await googleLogin(
 				token,
@@ -35,17 +39,20 @@ export function LoginForm() {
 				addUserData,
 			);
 
+			
 			if (response?.message === "User does not exist") {
-				toast.warn("User doen't exist! Please Signup", {
-					className: "dark-toast",
-					bodyClassName: "dark-toast-body",
-					progressClassName: "dark-toast-progress",
-				});
-				navigate("/register");
-				return;
+				setGoogleTokenResponse(result?._tokenResponse);
+				setShowPasswordPopup(true);
+				// toast.warn("User doen't exist! Please Signup", {
+				// 	className: "dark-toast",
+				// 	bodyClassName: "dark-toast-body",
+				// 	progressClassName: "dark-toast-progress",
+				// });
+				// navigate("/register");
+				// return;
 			}
 
-			if (!response?.username) {
+			if (!response?.user && !response?.message) {
 				toast.error("Google login failed", {
 					className: "dark-toast",
 					bodyClassName: "dark-toast-body",
@@ -54,11 +61,9 @@ export function LoginForm() {
 				return;
 			}
 
-			toast.success("🎉 Welcome back!", {
-				className: "dark-toast",
-				bodyClassName: "dark-toast-body",
-				progressClassName: "dark-toast-progress",
-			});
+			if(response?.message === "Welcome back!"){
+				toast.success("🎉 Welcome back!");
+			}
 		} catch (error) {
 			console.error("Error during google login:", error);
 			toast.error("Something went wrong with Google login", {
@@ -68,6 +73,21 @@ export function LoginForm() {
 			});
 		}
 	};
+	const handleNewUserSignupViaGoogle = async (password) => {
+		try {
+			const user = await googleSignUp(googleTokenResponse, password);
+			if (user) {
+				await addUserData(user);
+				setShowPasswordPopup(false);
+				navigate("/");
+				toast.success("Account created successfully!");
+			}
+		} catch (error) {
+			console.error("Google signup error:", error);
+			toast.error("Failed to create account");
+		}
+	}
+
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
@@ -97,6 +117,12 @@ export function LoginForm() {
 
 	return (
 		<div className="flex items-center justify-center bg-surface-50 dark:bg-surface-900">
+				{showPasswordPopup && (	
+					<PasswordPopup
+					onSubmit={handleNewUserSignupViaGoogle}
+					onClose={() => setShowPasswordPopup(false)}
+					/>)
+				}
 			<div className="w-full max-w-md p-8 bg-white dark:bg-surface-800 rounded-lg shadow-lg border border-surface-200 dark:border-surface-700">
 				<form onSubmit={handleSubmit} className="space-y-4">
 					<div>
